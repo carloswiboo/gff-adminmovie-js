@@ -29,15 +29,13 @@ export default function Component() {
             className=" w-32 mx-auto mb-3"
           />
 
-          <img
-            src="https://www.gironafilmfestival.com/wp-content/uploads/2023/12/LIVE.png"
-            className=" w-20 mx-auto"
-          />
-
-          <h2 className="mt-6 text-center text-2xl font-bold text-red-500">
+          <h2 className="mt-3 text-center text-2xl font-bold text-red-500">
             Girona Film Festival
           </h2>
-          <h2 className="mt-2 text-center text-sm font-medium text-gray-300">
+          <h2 className="mt-3 text-center text-lg font-light text-white">
+            Download your certificate, movie streaming administration
+          </h2>
+          <h2 className="mt-3 text-center text-sm font-medium text-gray-300">
             Please provide your submission ID and email <br /> (registered in
             FilmFreeway)
           </h2>
