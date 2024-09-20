@@ -4,9 +4,12 @@ import handlebars from "handlebars";
 import { mailTemplate } from "@/handlebars/mailTemplate";
 import { createToken } from "@/lib/createToken";
 
-export async function GET() {
+export async function GET(request) {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
+
+    const url = new URL(request.url);
+    const baseUrl = `${url.protocol}//${url.host}/`;
 
     const template = handlebars.compile(mailTemplate());
 
@@ -17,8 +20,8 @@ export async function GET() {
 
     const html = template({
       title: "Hey you!",
-      content: `${hola}`,
-      link: process.env.FINAL_URL + hola,
+      content: `${baseUrl}`,
+      link: baseUrl + "editmovie/" + hola,
       buttonLink: "Edit your movie streaming and download your certificate",
     });
 
