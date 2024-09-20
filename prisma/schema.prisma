@@ -1,14 +1,434 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model accesosqr {
+  accesosqr          Int              @id @default(autoincrement())
+  idpagos_donaciones Int
+  creation_date      DateTime         @default(now()) @db.DateTime(0)
+  update_date        DateTime         @default(now()) @db.DateTime(0)
+  status             Int              @default(1)
+  fechaEntrada       DateTime?        @db.DateTime(0)
+  fechaSalida        DateTime?        @db.DateTime(0)
+  pagos_donaciones   pagos_donaciones @relation(fields: [idpagos_donaciones], references: [idpagos_donaciones], onDelete: NoAction, onUpdate: NoAction, map: "FK_accesosqr_pagos_donaciones")
+
+  @@index([idpagos_donaciones], map: "FK_accesosqr_pagos_donaciones")
+}
+
+model aforo_sesion_cine {
+  idaforo_sesion_cine       Int                     @id @default(autoincrement())
+  id_tipos_aforo            Int
+  idsesiones_cines_catalogo Int
+  numero                    Int
+  status                    Int
+  creation_date             DateTime                @default(now()) @db.DateTime(0)
+  update_date               DateTime                @default(now()) @db.DateTime(0)
+  tipos_aforo               tipos_aforo             @relation(fields: [id_tipos_aforo], references: [idtipos_aforo], onDelete: NoAction, onUpdate: NoAction, map: "Relacionar_Id_Aforo")
+  sesiones_cines_catalogo   sesiones_cines_catalogo @relation(fields: [idsesiones_cines_catalogo], references: [idsesiones_cines_catalogo], onDelete: NoAction, onUpdate: NoAction, map: "Relacionar_Sesion")
+
+  @@index([id_tipos_aforo], map: "Relacionar_Id_Aforo_idx")
+  @@index([idsesiones_cines_catalogo], map: "Relacionar_Sesion_idx")
+}
+
+model carouseldonations {
+  idcarouseldonations Int       @id @default(autoincrement())
+  nombre              String?   @db.VarChar(2000)
+  descripcion         String?   @db.VarChar(2000)
+  urlImagen           String?   @db.VarChar(500)
+  creation_date       DateTime? @default(now()) @db.DateTime(0)
+  update_date         DateTime? @default(now()) @db.DateTime(0)
+  status              Int?      @default(1)
+}
+
+model catalogo {
+  submission_id           Int                       @id
+  idedicion               Int?
+  detalle                 Json?
+  status                  Int?                      @default(1)
+  creation_date           DateTime?                 @default(now()) @db.DateTime(0)
+  update_date             DateTime?                 @default(now()) @db.DateTime(0)
+  urlImagenPortada        String?                   @default("https://www.gironafilmfestival.com/wp-content/uploads/2023/10/sinImagenPelicula.png") @db.VarChar(5000)
+  urlImagenFondo          String?                   @default("https://www.gironafilmfestival.com/wp-content/uploads/2023/10/sinImagenFondo.png") @db.VarChar(5000)
+  urlImagenApoyo          String?                   @default("https://www.gironafilmfestival.com/wp-content/uploads/2022/08/GettyImages-1150049038-1000x630-1.jpeg") @db.VarChar(5000)
+  iframePelicula          String?                   @db.Text
+  mostrarStreaming        Int?                      @default(1)
+  tipoStreaming           String?                   @default("Mercado") @db.VarChar(45)
+  paisesStreaming         Json?
+  iframeTrailer           String?                   @db.Text
+  comentarios             String?                   @db.Text
+  carousel                Int?                      @default(0)
+  email                   String?                   @db.VarChar(90)
+  ediciones               ediciones?                @relation(fields: [idedicion], references: [idedicion], onDelete: NoAction, onUpdate: NoAction, map: "edicion_catalogo")
+  reproduccionpeliculas   reproduccionpeliculas[]
+  sesiones_cines_catalogo sesiones_cines_catalogo[]
+  watchlist               watchlist[]
+
+  @@index([idedicion], map: "edicion_catalogo_idx")
+}
+
+model cines {
+  idcine        Int       @id @default(autoincrement())
+  idedicion     Int
+  nombre        String    @db.Text
+  direccion     String    @db.Text
+  urlGoogle     String    @db.Text
+  imagenUrl     String    @default("https://www.gironafilmfestival.com/wp-content/uploads/2022/08/logo-girona-film-festival.png") @db.VarChar(9000)
+  creation_date DateTime  @default(now()) @db.DateTime(0)
+  update_date   DateTime  @default(now()) @db.DateTime(0)
+  status        Int
+  online        Int       @default(0)
+  orden         Int?      @default(0)
+  ediciones     ediciones @relation(fields: [idedicion], references: [idedicion], onDelete: NoAction, onUpdate: NoAction, map: "edicion")
+  salas         salas[]
+
+  @@index([idedicion], map: "edicion_idx")
+}
+
+model configuracion {
+  idconfiguracion Int       @id @default(autoincrement())
+  nombre          String?   @db.VarChar(45)
+  data            String?   @db.Text
+  status          Int?
+  creation_date   DateTime? @default(now()) @db.DateTime(0)
+  update_date     DateTime? @default(now()) @db.DateTime(0)
+}
+
+model ediciones {
+  idedicion      Int              @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  anio           String           @db.VarChar(10)
+  nombre         String           @db.VarChar(100)
+  slogan         String           @db.VarChar(300)
+  fechaInicio    DateTime         @db.DateTime(0)
+  fechaFin       DateTime         @db.DateTime(0)
+  creation_date  DateTime         @default(now()) @db.DateTime(0)
+  update_date    DateTime         @default(now()) @db.DateTime(0)
+  status         Int
+  imagenBase64   String?          @db.LongText
+  imagenUrl      String?          @db.VarChar(9000)
+  catalogo       catalogo[]
+  cines          cines[]
+  equipo         equipo[]
+  hoteles        hoteles[]
+  patrocinadores patrocinadores[]
+}
+
+model equipo {
+  idequipo      Int        @id @default(autoincrement())
+  idedicion     Int?
+  idpuesto      Int?
+  orden         Int?
+  nombre        String?    @db.VarChar(200)
+  descripcion   String?    @db.VarChar(200)
+  linkedin      String?    @db.VarChar(500)
+  creation_date DateTime?  @default(now()) @db.Timestamp(0)
+  update_date   DateTime?  @default(now()) @db.Timestamp(0)
+  status        Int?
+  imagenUrl     String?    @db.VarChar(1000)
+  ediciones     ediciones? @relation(fields: [idedicion], references: [idedicion], onDelete: NoAction, onUpdate: NoAction, map: "Relacion_Equipo_Edicion")
+
+  @@index([idedicion], map: "Relacion_Equipo_Edicion_idx")
+}
+
+model fechas_catalogo_streaming {
+  idfechas_catalogo_streaming Int       @id @default(autoincrement())
+  submission_id               Int?
+  fechaInicio                 DateTime? @db.DateTime(0)
+  fechaFin                    DateTime? @db.DateTime(0)
+  status                      Int?
+  created_at                  DateTime? @default(now()) @db.DateTime(0)
+  updated_at                  DateTime? @default(now()) @db.DateTime(0)
+}
+
+model funciones {
+  idfuncion       Int       @id @unique(map: "idfuncion_UNIQUE") @default(autoincrement())
+  idsala          Int?
+  status          Int?      @default(1)
+  creation_date   DateTime? @db.DateTime(0)
+  update_date     DateTime? @db.DateTime(0)
+  fechaHoraInicio DateTime? @default(now()) @db.DateTime(0)
+  fechaHoraFin    DateTime? @default(now()) @db.DateTime(0)
+}
+
+model hoteles {
+  idhoteles     Int        @id @default(autoincrement())
+  idedicion     Int?
+  nombre        String?    @db.VarChar(500)
+  descripcion   String?    @db.Text
+  imageUrl      String?    @db.VarChar(3000)
+  hotelUrl      String?    @db.VarChar(3000)
+  mapsUrl       String?    @db.VarChar(3000)
+  status        Int?
+  creation_date DateTime?  @default(now()) @db.DateTime(0)
+  update_date   DateTime?  @default(now()) @db.DateTime(0)
+  orden         Int?       @default(0)
+  ediciones     ediciones? @relation(fields: [idedicion], references: [idedicion], onDelete: NoAction, onUpdate: NoAction, map: "hotelEdicionRelacion")
+
+  @@index([idedicion], map: "hotelEdicionRelacion_idx")
+}
+
+model menuprincipal {
+  idmenuprincipal  Int       @id @default(autoincrement())
+  nombre           String?   @db.VarChar(200)
+  url              String?   @default("/") @db.VarChar(500)
+  icono            String?   @db.VarChar(200)
+  idtipos_usuarios Int?      @default(1)
+  externo          Int?      @default(0)
+  creation_date    DateTime? @default(now()) @db.Timestamp(0)
+  update_date      DateTime? @default(now()) @db.Timestamp(0)
+  status           Int?      @default(1)
+  orden            Int?
+}
+
+model metodospago {
+  idmetodospago    Int                @id @default(autoincrement())
+  nombre           String?            @db.VarChar(500)
+  status           Int?               @default(0)
+  creation_date    DateTime?          @default(now()) @db.DateTime(0)
+  update_time      DateTime?          @default(now()) @db.DateTime(0)
+  pagos_donaciones pagos_donaciones[]
+}
+
+model pagos_donaciones {
+  idpagos_donaciones  Int                @id @default(autoincrement())
+  donante             Json?
+  informacionPago     Json?
+  idpreciosdonaciones Int?
+  creation_date       DateTime?          @default(now()) @db.DateTime(0)
+  update_date         DateTime?          @default(now()) @db.DateTime(0)
+  status              Int?               @default(1)
+  idmetodospago       Int?               @default(1)
+  lecturasQr          Int?               @default(0)
+  accesosqr           accesosqr[]
+  preciosdonaciones   preciosdonaciones? @relation(fields: [idpreciosdonaciones], references: [idpreciosdonaciones], onDelete: NoAction, onUpdate: NoAction, map: "donacion_iddonacion")
+  metodospago         metodospago?       @relation(fields: [idmetodospago], references: [idmetodospago], onDelete: NoAction, onUpdate: NoAction, map: "donacion_metodopago")
+
+  @@index([idpreciosdonaciones], map: "donacion_iddonacion_idx")
+  @@index([idmetodospago], map: "donacion_metodopago_idx")
+}
+
+model patrocinadores {
+  idpatrocinador Int       @id @default(autoincrement())
+  idedicion      Int
+  nombre         String    @db.VarChar(1000)
+  web            String    @db.VarChar(1000)
+  facebook       String?   @db.VarChar(1000)
+  instagram      String?   @db.VarChar(1000)
+  linkedin       String?   @db.VarChar(1000)
+  imagenUrl      String?   @db.VarChar(1000)
+  comentarios    String?   @db.Text
+  status         Int?
+  orden          Int?
+  creation_date  DateTime  @default(now()) @db.DateTime(0)
+  update_date    DateTime  @default(now()) @db.DateTime(0)
+  imagenBase64   String?   @db.LongText
+  espublico      Int?      @default(1)
+  ediciones      ediciones @relation(fields: [idedicion], references: [idedicion], onDelete: NoAction, onUpdate: NoAction, map: "Patrocinadores_Edicion")
+
+  @@index([idedicion], map: "Patrocinadores_Edicion_idx")
+}
+
+model precios {
+  id            Int             @id
+  nombre        String          @db.VarChar(500)
+  precio        Decimal         @default(5) @db.Decimal(10, 0)
+  diasActivo    Int
+  status        Int             @default(0)
+  usuario_pagos usuario_pagos[]
+}
+
+model preciosdonaciones {
+  idpreciosdonaciones Int                @id @default(autoincrement())
+  nombre              String?            @db.VarChar(100)
+  descripcion         String?            @db.Text
+  status              Int?               @default(0)
+  aportacion          Int?               @default(5)
+  creation_date       DateTime?          @default(now()) @db.DateTime(0)
+  update_date         DateTime?          @default(now()) @db.DateTime(0)
+  orden               Int?               @default(0)
+  muestraPublico      Int?               @default(0)
+  pagos_donaciones    pagos_donaciones[]
+}
+
+model puestos {
+  id            Int        @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  nombre        String?    @db.Text
+  descripcion   String?    @db.Text
+  creation_date DateTime   @default(now()) @db.Timestamp(0)
+  update_date   DateTime   @default(now()) @db.Timestamp(0)
+  status        Int?
+  usuarios      usuarios[]
+}
+
+model red_festivales {
+  idred_festivales Int       @id @default(autoincrement())
+  nombre           String?   @db.LongText
+  descripcion      String?   @db.LongText
+  urlimagen        String?   @db.LongText
+  pais             String?   @db.LongText
+  ciudad           String?   @db.LongText
+  web              String?   @db.LongText
+  facebook         String?   @db.LongText
+  orden            Int?
+  status           Int?      @default(1)
+  creation_date    DateTime? @default(now()) @db.DateTime(0)
+  update_date      DateTime? @default(now()) @db.DateTime(0)
+}
+
+model reproduccionpeliculas {
+  idreproduccionpeliculas Int       @id @default(autoincrement())
+  submission_id           Int
+  idusuario               Int
+  creation_date           DateTime? @default(now()) @db.DateTime(0)
+  update_date             DateTime? @default(now()) @db.DateTime(0)
+  status                  Int?      @default(1)
+  duracion                DateTime? @default(dbgenerated("'00:00:00'")) @db.Time(0)
+  catalogo                catalogo  @relation(fields: [submission_id], references: [submission_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_REPRODUCCION_CATALOGO")
+  usuarios                usuarios  @relation(fields: [idusuario], references: [idusuario], onDelete: NoAction, onUpdate: NoAction, map: "FK_REPRODUCCION_USUARIO")
+
+  @@index([submission_id], map: "FK_REPRODUCCION_CATALOGO")
+  @@index([idusuario], map: "FK_REPRODUCCION_USUARIO_idx")
+}
+
+model salas {
+  idsala        Int        @id @default(autoincrement())
+  idcine        Int
+  nombre        String     @db.Text
+  capacidad     Int
+  venta         Int
+  creation_date DateTime   @default(now()) @db.DateTime(0)
+  update_date   DateTime   @default(now()) @db.DateTime(0)
+  status        Int
+  cines         cines      @relation(fields: [idcine], references: [idcine], onDelete: NoAction, onUpdate: NoAction, map: "Sala pertenece a un cine")
+  sesiones      sesiones[]
+
+  @@index([idcine], map: "Sala pertenece a un cine_idx")
+}
+
+model sesiones {
+  idsesion                Int                       @id @default(autoincrement())
+  nombreSesion            String?                   @db.Text
+  idsala                  Int?
+  orden                   Int?
+  inicio                  DateTime?                 @db.DateTime(0)
+  fin                     DateTime?                 @db.DateTime(0)
+  creation_date           DateTime?                 @default(now()) @db.DateTime(0)
+  update_date             DateTime?                 @default(now()) @db.DateTime(0)
+  status                  Int?
+  salas                   salas?                    @relation(fields: [idsala], references: [idsala], onDelete: NoAction, onUpdate: NoAction, map: "Relación Sesion con Sala")
+  sesiones_cines_catalogo sesiones_cines_catalogo[]
+
+  @@index([idsala], map: "Relación Sesion con Sala_idx")
+}
+
+model sesiones_cines_catalogo {
+  idsesiones_cines_catalogo Int                 @id @default(autoincrement())
+  idsesion                  Int?
+  submission_id             Int
+  status                    Int?
+  creation_date             DateTime?           @default(now()) @db.DateTime(0)
+  update_date               DateTime?           @default(now()) @db.DateTime(0)
+  orden                     Int?
+  aforo_sesion_cine         aforo_sesion_cine[]
+  catalogo                  catalogo            @relation(fields: [submission_id], references: [submission_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_sesiones_cines_catalogo_catalogo")
+  sesiones                  sesiones?           @relation(fields: [idsesion], references: [idsesion], onDelete: NoAction, onUpdate: NoAction, map: "idSesionRelacion")
+
+  @@index([submission_id], map: "idCatalogoRelacion_idx")
+  @@index([idsesion], map: "idSesionRelacion_idx")
+}
+
+model tipos_aforo {
+  idtipos_aforo     Int                 @id @default(autoincrement())
+  nombre            String              @db.Text
+  venta_en_linea    Int                 @db.TinyInt
+  status            Int
+  creation_date     DateTime            @default(now()) @db.DateTime(0)
+  update_date       DateTime            @default(now()) @db.DateTime(0)
+  aforo_sesion_cine aforo_sesion_cine[]
+}
+
+model tipos_usuarios {
+  idtipos_usuarios    Int        @id @default(autoincrement())
+  nombre_tipo_usuario String?    @db.VarChar(45)
+  status              Int?
+  url_dev             String?    @db.Text
+  url_prod            String?    @db.Text
+  url_stage           String?    @db.Text
+  usuarios            usuarios[]
+}
+
+model transparencia {
+  idtransparencia Int       @id @default(autoincrement())
+  nombre          String?   @db.VarChar(500)
+  descripcion     String?   @db.VarChar(1000)
+  url             String?   @db.LongText
+  base64          String?   @db.LongText
+  orden           Int?
+  status          Int?      @default(1)
+  creation_date   DateTime? @default(now()) @db.DateTime(0)
+  update_date     DateTime? @default(now()) @db.DateTime(0)
+}
+
+model usuario_pagos {
+  idusuario_pagos Int       @id @default(autoincrement())
+  idusuario       Int?
+  idpago          Int?
+  fechaPago       DateTime? @default(now()) @db.DateTime(0)
+  status          Int?      @default(1)
+  precios         precios?  @relation(fields: [idpago], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pagos")
+  usuarios        usuarios? @relation(fields: [idusuario], references: [idusuario], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuarios")
+
+  @@index([idpago], map: "fk_pagos_idx")
+  @@index([idusuario], map: "usuario_pagos_Relacion_idx")
+}
+
+model usuarios {
+  idusuario              Int                     @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  nombres                String                  @db.VarChar(1000)
+  apellidos              String                  @db.VarChar(1000)
+  email                  String                  @db.VarChar(1000)
+  contrasena             String                  @db.VarChar(1000)
+  idpuesto               Int?
+  idtipos_usuarios       Int
+  creation_date          DateTime                @default(now()) @db.Timestamp(0)
+  update_date            DateTime                @default(now()) @db.Timestamp(0)
+  status                 Int
+  imagenUrl              String?                 @db.VarChar(5000)
+  imagenBase64           String?                 @db.LongText
+  orden                  Int?                    @default(0)
+  linkedin               String?                 @db.VarChar(5000)
+  fechaVencimiento       DateTime?               @db.DateTime(0)
+  activacion             String?                 @db.VarChar(500)
+  cambioPassword         String?                 @db.VarChar(500)
+  detalle                String?                 @db.LongText
+  stripe_customer_id     String?                 @db.VarChar(1000)
+  stripe_price_id        String?                 @db.VarChar(1000)
+  stripe_subscription_id String?                 @db.VarChar(1000)
+  subscription_end_date  DateTime?               @db.DateTime(0)
+  reproduccionpeliculas  reproduccionpeliculas[]
+  usuario_pagos          usuario_pagos[]
+  puestos                puestos?                @relation(fields: [idpuesto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "idpuesto_puestos")
+  tipos_usuarios         tipos_usuarios          @relation(fields: [idtipos_usuarios], references: [idtipos_usuarios], onDelete: NoAction, onUpdate: NoAction, map: "idtipos_usuarios")
+  watchlist              watchlist[]
+
+  @@index([idpuesto], map: "idpuesto_puestos_idx")
+  @@index([idtipos_usuarios], map: "idtipos_usuarios_idx")
+}
+
+model watchlist {
+  idwatchlist   Int       @id @default(autoincrement())
+  idusuario     Int?
+  submission_id Int?
+  creation_date DateTime? @default(now()) @db.DateTime(0)
+  update_date   DateTime? @default(now()) @db.DateTime(0)
+  status        Int?      @default(1)
+  catalogo      catalogo? @relation(fields: [submission_id], references: [submission_id], onDelete: NoAction, onUpdate: NoAction, map: "watchlist_catalogo_fk")
+  usuarios      usuarios? @relation(fields: [idusuario], references: [idusuario], onDelete: NoAction, onUpdate: NoAction, map: "watchlist_usuario_fk")
+
+  @@index([submission_id], map: "watchlist_catalogo_fk")
+  @@index([idusuario], map: "watchlist_usuario_fk_idx")
 }
