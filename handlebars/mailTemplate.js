@@ -1,4 +1,4 @@
-export const mailTemplateDos = () => {
+export const mailTemplate = () => {
   return `
     <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
   <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -141,23 +141,13 @@ export const mailTemplateDos = () => {
       <tr>
         <td style="overflow-wrap:break-word;word-break:break-word;padding:0px;font-family:helvetica,sans-serif;" align="left">
     <!--[if mso]><table width="100%"><tr><td><![endif]-->
-      <h1 class="v-font-size" style="margin: 0px; color: #ffffff; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 48px; font-weight: 400;">Girona Film Festival</h1>
+      <h1 class="v-font-size" style="margin: 0px; color: #ffffff; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 30px; font-weight: 400;">Girona Film Festival</h1>
     <!--[if mso]></td></tr></table><![endif]-->
         </td>
       </tr>
     </tbody>
   </table>
-  <table id="u_content_heading_2" style="font-family:helvetica,sans-serif;" role="presentation" cellpadding="0" cellspacing="0" width="100%" border="0">
-    <tbody>
-      <tr>
-        <td style="overflow-wrap:break-word;word-break:break-word;padding:0px 0px 24px;font-family:helvetica,sans-serif;" align="left">
-    <!--[if mso]><table width="100%"><tr><td><![endif]-->
-      <h2 class="v-font-size" style="margin: 0px; color: #ffffff; line-height: 140%; text-align: center; word-wrap: break-word; font-size: 28px; font-weight: 400;"><span><span></span></span></h2>
-    <!--[if mso]></td></tr></table><![endif]-->
-        </td>
-      </tr>
-    </tbody>
-  </table>
+
     <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
     </div>
   </div>
@@ -201,7 +191,7 @@ export const mailTemplateDos = () => {
       <tr>
         <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:helvetica,sans-serif;" align="left">
     <div class="v-font-size" style="font-size: 14px; color: #0071e3; line-height: 140%; text-align: center; word-wrap: break-word;">
-      <p style="line-height: 140%;"><a href="{{link}}"> {{buttonLink}} </a></p>
+      <p style="line-height: 140%;"><a style="color: red !important" href="{{link}}"> {{buttonLink}} </a></p>
     </div>
         </td>
       </tr>
