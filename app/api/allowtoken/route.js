@@ -10,7 +10,10 @@ export async function GET() {
 
     const template = handlebars.compile(mailTemplate());
 
-    let hola = await createToken({ email: "carlos@prueba.com" });
+    let hola = await createToken({
+      email: "carlos@prueba.com",
+      submission_id: "123465789",
+    });
 
     const html = template({
       title: "Hey you!",
