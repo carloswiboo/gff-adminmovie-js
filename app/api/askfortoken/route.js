@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import handlebars from "handlebars";
 import { mailTemplate } from "@/handlebars/mailTemplate";
 import { createToken } from "@/lib/createToken";
+import prisma from "@/lib/prisma";
 
 export async function POST(request, { params }) {
   try {
@@ -17,7 +18,22 @@ export async function POST(request, { params }) {
       );
     }
 
-    debugger;
+
+
+    const resultQuery = await prisma.$queryRaw`
+    SELECT * FROM catalogo
+    WHERE submission_id = ${parseInt(submission_id)}
+    AND JSON_EXTRACT(detalle, '$.Email') = ${email}
+    AND status = 1
+  `;
+
+    if (resultQuery.length === 0) {
+      return Response.json(
+        { error: "Not valid data, try again" },
+        { status: 400 }
+      );
+    }
+
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -27,8 +43,8 @@ export async function POST(request, { params }) {
     const template = handlebars.compile(mailTemplate());
 
     let hola = await createToken({
-      email: "carlos@prueba.com",
-      submission_id: "123465789",
+      email: [resultQuery[0].detalle.Email],
+      submission_id: submission_id,
     });
 
     const html = template({
@@ -38,14 +54,15 @@ export async function POST(request, { params }) {
       buttonLink: "Edit your movie streaming and download your certificate",
     });
 
-    let result = await resend.emails.send({
+    /* let result = await resend.emails.send({
       from: "Girona Film Festival <notifications@gironafilmfestival.com>",
       to: ["carlosestrada122@gmail.com"],
       subject: "Movie Administration - Here is your access link",
       html: html,
     });
+    */
 
-    return Response.json(result);
+    return Response.json(hola);
   } catch (e) {
     return Response.json({ error: e.message }, { status: 500 });
   }
