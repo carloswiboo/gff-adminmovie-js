@@ -10,6 +10,13 @@ export async function POST(request, { params }) {
     const body = await request.json();
     const { email, submission_id } = body;
 
+    if (!email || !submission_id) {
+      return Response.json(
+        { error: "Email and submission_id are required" },
+        { status: 400 }
+      );
+    }
+
     debugger;
 
     const resend = new Resend(process.env.RESEND_API_KEY);
