@@ -4,8 +4,14 @@ import handlebars from "handlebars";
 import { mailTemplate } from "@/handlebars/mailTemplate";
 import { createToken } from "@/lib/createToken";
 
-export async function GET(request) {
+export async function POST(request, { params }) {
   try {
+    // Parse the request body
+    const body = await request.json();
+    const { email, submission_id } = body;
+
+    debugger;
+
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     const url = new URL(request.url);

@@ -1,4 +1,5 @@
 "use client";
+import { axiosAPIPost } from "@/lib/api/APIPost";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -15,8 +16,10 @@ export default function Component() {
         .required("Your email is required"),
     }),
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
-      // Aquí puedes manejar la lógica de inicio de sesión
+      debugger;
+      axiosAPIPost("/api/askfortoken", {}, values).then((resultado) => {
+        debugger;
+      });
     },
   });
 
