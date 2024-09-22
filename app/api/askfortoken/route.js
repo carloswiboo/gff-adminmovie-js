@@ -18,8 +18,6 @@ export async function POST(request, { params }) {
       );
     }
 
-
-
     const resultQuery = await prisma.$queryRaw`
     SELECT * FROM catalogo
     WHERE submission_id = ${parseInt(submission_id)}
@@ -34,7 +32,6 @@ export async function POST(request, { params }) {
       );
     }
 
-
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     const url = new URL(request.url);
@@ -43,7 +40,7 @@ export async function POST(request, { params }) {
     const template = handlebars.compile(mailTemplate());
 
     let hola = await createToken({
-      email: [resultQuery[0].detalle.Email],
+      email: resultQuery[0].detalle.Email,
       submission_id: submission_id,
     });
 
@@ -54,13 +51,12 @@ export async function POST(request, { params }) {
       buttonLink: "Edit your movie streaming and download your certificate",
     });
 
-    /* let result = await resend.emails.send({
+    let result = await resend.emails.send({
       from: "Girona Film Festival <notifications@gironafilmfestival.com>",
       to: ["carlosestrada122@gmail.com"],
       subject: "Movie Administration - Here is your access link",
       html: html,
     });
-    */
 
     return Response.json(hola);
   } catch (e) {

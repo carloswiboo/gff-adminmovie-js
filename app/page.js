@@ -59,7 +59,7 @@ export default function Component() {
             // Show the status of the request
             status === 200 && (
               <a
-                href={"modifyMovie/" + finalData}
+                href={"modifymovie/" + finalData}
                 className="bg-green-100 w-full border border-green-400 text-green-700 px-4 py-3 rounded mx-auto text-center"
               >
                 Modify my movie(s) now!
