@@ -47,7 +47,7 @@ export async function POST(request, { params }) {
     const html = template({
       title: "Here is your url!",
       content: `${resultQuery[0].detalle["Project Title"]} With this url you can edit your movie streaming and download your certificate`,
-      link: baseUrl + "editmovie/" + hola,
+      link: baseUrl + "modifymovie/" + hola,
       buttonLink: "Edit your movie streaming and download your certificate",
     });
 
