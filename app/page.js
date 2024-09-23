@@ -4,10 +4,14 @@ import { useFormik } from "formik";
 import Head from "next/head";
 import React from "react";
 import * as Yup from "yup";
+import LoadingScreenComponent from "./components/LoadingScreenComponent/LoadingScreenComponent";
 
 export default function Component() {
   const [status, setStatus] = React.useState(null);
   const [finalData, setFinalData] = React.useState("");
+
+  const [loading, setLoading] = React.useState(false);
+
   const formik = useFormik({
     initialValues: {
       submission_id: "23982164",
@@ -20,12 +24,14 @@ export default function Component() {
         .required("Your email is required"),
     }),
     onSubmit: (values) => {
-      debugger;
+      setLoading(true);
+
       axiosAPIPost("/api/askfortoken", {}, values).then((resultado) => {
         setStatus(resultado.status);
         if (resultado.status === 200) {
           setFinalData(resultado.data);
         }
+        setLoading(false);
       });
     },
   });
@@ -35,6 +41,7 @@ export default function Component() {
       <Head>
         <title> Download your certificate and movie administration</title>
       </Head>
+      {loading && <LoadingScreenComponent />}
       <div className="min-h-screen bg-black flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 fondoLogin">
         <div className="max-w-md w-full space-y-8">
           <div className=" text-center">

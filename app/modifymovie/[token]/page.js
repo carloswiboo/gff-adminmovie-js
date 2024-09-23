@@ -91,7 +91,6 @@ export default function Component({ params }) {
           arregloFinal.push(resultadoPaisEncontrado);
         }
 
-        debugger;
         setDataPaisesSeleccionados(arregloFinal);
 
         setLoading(false);
@@ -105,150 +104,169 @@ export default function Component({ params }) {
     <>
       <Head>
         <title>
-          Download your certificate and admin your streaming information
+          {finalData?.movie?.detalle["Project Title"] || "Movie Information"} -
+          Streaming Management
         </title>
+        <meta
+          name="description"
+          content="Edit movie streaming information and geolocation"
+        />
       </Head>
       {loading && <LoadingScreenComponent />}
-      <div className="min-h-screen bg-black flex items-start justify-center py-12 px-4 sm:px-6 lg:px-8 fondoLogin">
-        <div className="grid grid-cols-12 gap-6 w-full max-w-7xl">
-          <div className="col-span-9 bg-white p-8 rounded-lg shadow-md">
-            <h1 className="text-2xl font-bold text-center mb-4 text-red-600">
-              <MovieCreationIcon className="w-8 h-8 inline-block mr-2" /> Your
-              Movie Information
-            </h1>
-            <p className="text-gray-600 text-center mb-6">
-              Edit movie streaming information and geolocation.
-            </p>
-            <div className="space-y-6">
-              <div>
-                <label
-                  htmlFor="streaming-status"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Streaming Status
-                </label>
-                <select
-                  id="streaming-status"
-                  name="streaming-status"
-                  value={streamingStatus}
-                  onChange={(e) => setStreamingStatus(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                >
-                  <option value="0">Select Status</option>
-                  <option value="1">Active</option>
-                  <option value="0">Inactive</option>
-                </select>
-              </div>
+      <div className="min-h-screen bg-black flex justify-center py-6 px-4 sm:px-6 lg:px-8 fondoLogin items-center">
+        <div className="w-full max-w-7xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-9 bg-white p-4 sm:p-6 lg:p-8 rounded-lg shadow-md">
+              <h1 className="text-xl sm:text-2xl font-bold text-center mb-4 text-red-600">
+                <MovieCreationIcon className="w-6 h-6 sm:w-8 sm:h-8 inline-block mr-2" />{" "}
+                Your Movie Information
+              </h1>
+              <p className="text-sm sm:text-base text-gray-600 text-center mb-6">
+                Edit movie streaming information and geolocation.
+              </p>
+              <div className="space-y-4 sm:space-y-6">
+                <div>
+                  <label
+                    htmlFor="streaming-status"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Streaming Status
+                  </label>
+                  <select
+                    id="streaming-status"
+                    name="streaming-status"
+                    value={streamingStatus}
+                    onChange={(e) => setStreamingStatus(e.target.value)}
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                  >
+                    <option value="0">Select Status</option>
+                    <option value="1">Active</option>
+                    <option value="0">Inactive</option>
+                  </select>
+                </div>
 
-              <div>
-                <Button
-                  variant="text"
+                <div>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    <Button
+                      variant="text"
+                      onClick={() => {
+                        setDataPaisesSeleccionados(dataPaises);
+                      }}
+                      className="text-xs sm:text-sm"
+                    >
+                      Select all countries
+                    </Button>
+                    <Button
+                      variant="text"
+                      onClick={() => {
+                        setDataPaisesSeleccionados([]);
+                      }}
+                      className="text-xs sm:text-sm"
+                    >
+                      Remove all countries
+                    </Button>
+                  </div>
+                  <Autocomplete
+                    multiple
+                    id="tags-standard"
+                    value={dataPaisesSeleccionados}
+                    options={dataPaises}
+                    getOptionLabel={(option) =>
+                      option.cca2 + " - " + option.name.common
+                    }
+                    onChange={(evento, valor) => {
+                      setDataPaisesSeleccionados(valor);
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="standard"
+                        label="Select the countries where the movie will be available"
+                        placeholder="Countries"
+                      />
+                    )}
+                  />
+                </div>
+                <button
+                  type="submit"
                   onClick={() => {
-                    setDataPaisesSeleccionados(dataPaises);
+                    setLoading(true);
+
+                    let finalArreglo = {
+                      paisesStreaming: dataPaisesSeleccionados.map(
+                        (pais) => pais.cca2
+                      ),
+                      mostrarStreaming: streamingStatus,
+                      tokendata: params.token,
+                      submission_id: finalData?.movie?.submission_id,
+                    };
+
+                    axiosAPIPost(
+                      "/api/savemovieconfiguration",
+                      {},
+                      finalArreglo
+                    ).then((resultado) => {
+                      if (resultado.status !== 200) {
+                        setLoading(false);
+                        return;
+                      }
+                      window.location.reload();
+                      setLoading(false);
+                    });
                   }}
+                  className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out"
                 >
-                  Select all countries
-                </Button>
-                <Button
-                  variant="text"
-                  onClick={() => {
-                    setDataPaisesSeleccionados([]);
-                  }}
-                >
-                  Remove all countries
-                </Button>
-                <Autocomplete
-                  multiple
-                  id="tags-standard"
-                  value={dataPaisesSeleccionados}
-                  options={dataPaises}
-                  getOptionLabel={(option) =>
-                    option.cca2 + " - " + option.name.common
-                  }
-                  onChange={(evento, valor) => {
-                    setDataPaisesSeleccionados(valor);
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="standard"
-                      label="Select the countries where the movie will be available"
-                      placeholder="Countries"
-                    />
-                  )}
+                  <MovieCreationIcon className="mr-2 h-5 w-5" />
+                  Save Movie Configuration
+                </button>
+              </div>
+            </div>
+            <div className="lg:col-span-3 space-y-4 sm:space-y-6">
+              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+                <img
+                  src="https://www.gironafilmfestival.com/wp-content/uploads/2022/08/logo-girona-film-festival.png"
+                  className="w-full"
+                  alt="Girona Film Festival Logo"
                 />
               </div>
-              <button
-                type="submit"
-                onClick={() => {
-                  setLoading(true);
+              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+                <h2 className="text-lg sm:text-xl font-bold text-center mb-4 text-yellow-600">
+                  <WorkspacePremiumIcon className="w-5 h-5 sm:w-6 sm:h-6 inline-block mr-2" />{" "}
+                  Your Certificate
+                </h2>
+                <p className="text-sm sm:text-base text-gray-600 text-center mb-4">
+                  Download your certificate as PDF.
+                </p>
+                <button
+                  onClick={handleDownloadPDF}
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out"
+                >
+                  <DownloadIcon className="mr-2 h-5 w-5" />
+                  Download Certificate
+                </button>
+              </div>
+              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+                <h2 className="text-lg sm:text-xl font-bold text-center mb-4 text-yellow-600">
+                  Your movie data
+                </h2>
+                <p className="text-sm sm:text-base text-gray-600 text-center mb-4">
+                  <small>Movie Name</small> <br />
+                  <strong> {finalData?.movie?.detalle["Project Title"]}</strong>
+                </p>
 
-                  let finalArreglo = {
-                    paisesStreaming: dataPaisesSeleccionados.map(
-                      (pais) => pais.cca2
-                    ),
-                    mostrarStreaming: streamingStatus,
-                    tokendata: params.token,
-                    submission_id: finalData?.movie?.submission_id,
-                  };
-
-                  axiosAPIPost(
-                    "/api/savemovieconfiguration",
-                    {},
-                    finalArreglo
-                  ).then((resultado) => {
-                    if (resultado.status !== 200) {
-                      setLoading(false);
-                      return;
-                    }
-                    window.location.reload();
-                    setLoading(false);
-                  });
-                }}
-                className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out"
-              >
-                <MovieCreationIcon className="mr-2 h-5 w-5" />
-                Save Movie Configuration
-              </button>
-            </div>
-          </div>
-          <div className="col-span-3 space-y-6">
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-xl font-bold text-center mb-4 text-yellow-600">
-                <WorkspacePremiumIcon className="w-6 h-6 inline-block mr-2" />{" "}
-                Your Certificate
-              </h2>
-              <p className="text-gray-600 text-center mb-4">
-                Download your certificate as PDF.
-              </p>
-              <button
-                onClick={handleDownloadPDF}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out"
-              >
-                <DownloadIcon className="mr-2 h-5 w-5" />
-                Download Certificate
-              </button>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-xl font-bold text-center mb-4 text-yellow-600">
-                Your movie data
-              </h2>
-              <p className="text-gray-600 text-center mb-4">
-                <small>Movie Name</small> <br />
-                <strong> {finalData?.movie?.detalle["Project Title"]}</strong>
-              </p>
-
-              <p className="text-gray-600 text-center mb-4">
-                <small>Submission Status</small> <br />
-                <strong>
-                  {" "}
-                  {finalData?.movie?.detalle["Submission Status"]}
-                </strong>
-              </p>
+                <p className="text-sm sm:text-base text-gray-600 text-center mb-4">
+                  <small>Submission Status</small> <br />
+                  <strong>
+                    {" "}
+                    {finalData?.movie?.detalle["Submission Status"]}
+                  </strong>
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
       <div
         ref={certificateRef}
         style={{
