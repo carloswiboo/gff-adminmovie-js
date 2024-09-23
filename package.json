@@ -9,11 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.1.1",
+    "@mui/material": "^6.1.1",
     "@prisma/client": "^5.19.1",
     "axios": "^1.7.7",
     "formik": "^2.4.6",
     "handlebars": "^4.7.8",
+    "html2canvas": "^1.4.1",
     "jose": "^5.9.2",
+    "jspdf": "^2.5.2",
     "lucide-react": "^0.445.0",
     "next": "14.2.13",
     "prisma": "^5.19.1",

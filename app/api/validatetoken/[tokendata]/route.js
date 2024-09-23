@@ -1,4 +1,4 @@
-import { verifyToken } from "@/lib/validateToken";
+import { verifyToken } from "@/lib/createToken";
 
 export const revalidate = 0;
 export async function GET(request, { params }) {
