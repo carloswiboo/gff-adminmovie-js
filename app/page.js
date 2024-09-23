@@ -14,8 +14,8 @@ export default function Component() {
 
   const formik = useFormik({
     initialValues: {
-      submission_id: "23982164",
-      email: "rebecca.metcalf01@gmail.com",
+      submission_id: "",
+      email: "",
     },
     validationSchema: Yup.object({
       submission_id: Yup.string().required("Submission ID is required"),
