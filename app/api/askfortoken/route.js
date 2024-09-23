@@ -45,15 +45,19 @@ export async function POST(request, { params }) {
     });
 
     const html = template({
-      title: "Hey you!",
-      content: `${baseUrl}`,
+      title: "Here is your url!",
+      content: `With this url you can edit your movie streaming and download your certificate`,
       link: baseUrl + "editmovie/" + hola,
       buttonLink: "Edit your movie streaming and download your certificate",
     });
 
     let result = await resend.emails.send({
       from: "Girona Film Festival <notifications@gironafilmfestival.com>",
-      to: ["carlosestrada122@gmail.com"],
+      to: [
+        "director@gironafilmfestival.com",
+        "carlos@gironafilmfestival.com",
+        resultQuery[0].detalle.Email,
+      ],
       subject: "Movie Administration - Here is your access link",
       html: html,
     });
