@@ -119,7 +119,7 @@ export default function Component({ params }) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div className="lg:col-span-9 bg-white p-4 sm:p-6 lg:p-8 rounded-lg shadow-md">
               <h1 className="text-xl sm:text-2xl font-bold text-center mb-4 text-red-600">
-                <MovieCreationIcon className="w-6 h-6 sm:w-8 sm:h-8 inline-block mr-2" />{" "}
+                <MovieCreationIcon className="w-6 h-6 sm:w-8 sm:h-8 inline-block mr-2 " />{" "}
                 Your Movie Information
               </h1>
               <p className="text-sm sm:text-base text-gray-600 text-center mb-6">
@@ -298,7 +298,7 @@ export default function Component({ params }) {
             {finalData?.movie?.detalle["Judging Status"]}
           </span>
           <br />
-          {finalData?.movie?.detalle["Submission Categories"]}
+          <span>{finalData?.movie?.detalle["Submission Categories"]}</span>
         </h1>
         <h1
           style={{
@@ -313,16 +313,22 @@ export default function Component({ params }) {
             textTransform: "uppercase",
           }}
         >
-          {finalData?.movie?.detalle["Project Title"]}
-          {finalData?.movie?.detalle["Project Title (Original Language)"] && (
-            <>
-              <br />
-              <span style={{ fontSize: "18px" }}>
-                {" "}
-                {finalData?.movie?.detalle["Project Title (Original Language)"]}
-              </span>
-            </>
-          )}
+          <span>{finalData?.movie?.detalle["Project Title"]}</span>
+          <span>
+            {finalData?.movie?.detalle["Project Title (Original Language)"] && (
+              <>
+                <br />
+                <span style={{ fontSize: "18px" }}>
+                  {" "}
+                  {
+                    finalData?.movie?.detalle[
+                      "Project Title (Original Language)"
+                    ]
+                  }
+                </span>
+              </>
+            )}
+          </span>
           <br />
           <span style={{ fontSize: "14px" }}>
             {finalData?.movie?.detalle["Directors"]}{" "}

@@ -7,3 +7,25 @@
     url("https://www.gironafilmfestival.com/wp-content/uploads/2023/11/Diseno-sin-titulo-3.png")
       no-repeat center center fixed;
 }
+
+@font-face {
+  font-family: "GillSansHeavy";
+  src: url("/fonts/gill-sans/GillSansHeavy.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "GillSansMedium";
+  src: url("/fonts/gill-sans/GillSansMedium.otf") format("opentype");
+}
+
+* {
+  font-family: "GillSansMedium", sans-serif !important;
+}
+
+body {
+  font-family: "GillSansMedium", sans-serif !important;
+}
+
+.font-gill-sans-medium {
+  font-family: "GillSansMedium" !important;
+}
