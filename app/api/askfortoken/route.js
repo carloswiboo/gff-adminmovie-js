@@ -18,9 +18,10 @@ export async function POST(request, { params }) {
       );
     }
 
+    debugger;
     const resultQuery = await prisma.$queryRaw`
     SELECT * FROM catalogo
-    WHERE submission_id = ${parseInt(submission_id)}
+    WHERE JSON_EXTRACT(detalle, '$."Tracking Number"') = ${submission_id}
     AND JSON_EXTRACT(detalle, '$.Email') = ${email}
     AND status = 1
   `;

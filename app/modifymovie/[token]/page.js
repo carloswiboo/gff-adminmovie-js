@@ -65,6 +65,7 @@ export default function Component({ params }) {
   useEffect(() => {
     setLoading(true);
     axiosAPIGet("/api/getinformationmovie/" + params.token).then((response) => {
+      debugger;
       if (response.status !== 200) {
         router.push("/");
         setLoading(false);

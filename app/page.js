@@ -57,8 +57,8 @@ export default function Component() {
               Download your certificate, movie streaming administration
             </h2>
             <h2 className="mt-3 text-center text-sm font-medium text-gray-300">
-              Please provide your submission ID and email <br /> (registered in
-              FilmFreeway)
+              Please provide your Tracking Number and email <br /> (registered
+              in FilmFreeway)
             </h2>
             <h2 className="mt-4 text-center text-sm text-green-300">
               If is correct you will receive an email with a link to access the
@@ -92,7 +92,7 @@ export default function Component() {
                 <div className="rounded-md shadow-sm -space-y-px">
                   <div>
                     <label htmlFor="submission_id" className="sr-only">
-                      Submission ID
+                      Tracking Number
                     </label>
                     <input
                       id="submission_id"
@@ -100,7 +100,7 @@ export default function Component() {
                       type="text"
                       required
                       className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                      placeholder="Submission ID"
+                      placeholder="Tracking Number (Begins with GFF...)"
                       {...formik.getFieldProps("submission_id")}
                     />
                     {formik.touched.submission_id &&

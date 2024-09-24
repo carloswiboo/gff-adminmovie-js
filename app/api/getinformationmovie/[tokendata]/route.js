@@ -10,11 +10,13 @@ export async function GET(request, { params }) {
 
     const resultQuery = await prisma.$queryRaw`
     SELECT * FROM catalogo
-    WHERE submission_id = ${parseInt(token.submission_id)}
+    WHERE JSON_EXTRACT(detalle, '$."Tracking Number"') = ${token.submission_id}
     AND JSON_EXTRACT(detalle, '$.Email') = ${token.email}
     AND status = 1
     LIMIT 1
   `;
+
+    debugger;
 
     const resultQueryDOS = await prisma.$queryRaw`
 SELECT * FROM ediciones
