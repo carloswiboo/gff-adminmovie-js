@@ -287,14 +287,14 @@ export default function Component({ params }) {
             top: "450px",
             left: "300px",
             right: "300px",
-            fontSize: "32px",
+            fontSize: "30px",
             textAlign: "center",
             fontWeight: "bold",
             color: "#ffcc66",
             textTransform: "uppercase",
           }}
         >
-          <span style={{ fontSize: "30px" }}>
+          <span style={{ fontSize: "36px" }}>
             {finalData?.movie?.detalle["Submission Status"]}
           </span>
           <br />
@@ -317,11 +317,16 @@ export default function Component({ params }) {
           {finalData?.movie?.detalle["Project Title (Original Language)"] && (
             <>
               <br />
-              {finalData?.movie?.detalle["Project Title (Original Language)"]}
+              <span style={{ fontSize: "18px" }}>
+                {" "}
+                {finalData?.movie?.detalle["Project Title (Original Language)"]}
+              </span>
             </>
           )}
           <br />
-          {finalData?.movie?.detalle["Directors"]}
+          <span style={{ fontSize: "14px" }}>
+            {finalData?.movie?.detalle["Directors"]}{" "}
+          </span>
         </h1>
         <h1
           style={{
