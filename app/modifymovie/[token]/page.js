@@ -256,10 +256,10 @@ export default function Component({ params }) {
                 </p>
 
                 <p className="text-sm sm:text-base text-gray-600 text-center mb-4">
-                  <small>Submission Status</small> <br />
+                  <small>Judging Status</small> <br />
                   <strong>
                     {" "}
-                    {finalData?.movie?.detalle["Submission Status"]}
+                    {finalData?.movie?.detalle["Judging Status"]}
                   </strong>
                 </p>
               </div>
@@ -295,7 +295,7 @@ export default function Component({ params }) {
           }}
         >
           <span style={{ fontSize: "36px" }}>
-            {finalData?.movie?.detalle["Submission Status"]}
+            {finalData?.movie?.detalle["Judging Status"]}
           </span>
           <br />
           {finalData?.movie?.detalle["Submission Categories"]}
