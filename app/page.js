@@ -54,7 +54,10 @@ export default function Component() {
               Girona Film Festival
             </h2>
             <h2 className="mt-3 text-center text-lg font-light text-white">
-              Download your certificate, movie streaming administration
+              This is your folder for the Girona Film Festival. From here, you
+              can download your Selection or Award Certificate, manage your
+              permissions for the EMERGENT Festival streaming, and upload photos
+              of the film. It is a self-management tool.
             </h2>
             <h2 className="mt-3 text-center text-sm font-medium text-gray-300">
               Please provide your Tracking Number and email <br /> (registered
