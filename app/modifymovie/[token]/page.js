@@ -12,6 +12,8 @@ import MovieCreationIcon from "@mui/icons-material/MovieCreation";
 import LoadingScreenComponent from "@/app/components/LoadingScreenComponent/LoadingScreenComponent";
 import { Autocomplete, Button, TextField } from "@mui/material";
 import { axiosAPIPost } from "@/lib/api/APIPost";
+import ChangePhotoComponent from "@/app/components/ChangePhotoComponent/ChangePhotoComponent";
+import AceptTermsAndConditionsComponent from "@/app/components/AceptTermsAndConditionsComponent/AceptTermsAndConditionsComponent";
 
 export default function Component({ params }) {
   const certificateRef = useRef(null);
@@ -19,6 +21,8 @@ export default function Component({ params }) {
   const [token, setToken] = useState(null);
   const [finalData, setFinalData] = useState({});
   const [loading, setLoading] = useState(true);
+
+  const [modalTerms, setModalTerms] = useState(false);
 
   const [dataPaises, setDataPaises] = React.useState([]);
 
@@ -65,7 +69,6 @@ export default function Component({ params }) {
   useEffect(() => {
     setLoading(true);
     axiosAPIGet("/api/getinformationmovie/" + params.token).then((response) => {
-      debugger;
       if (response.status !== 200) {
         router.push("/");
         setLoading(false);
@@ -137,13 +140,23 @@ export default function Component({ params }) {
                     id="streaming-status"
                     name="streaming-status"
                     value={streamingStatus}
-                    onChange={(e) => setStreamingStatus(e.target.value)}
+                    onChange={(e) => {
+                      if (e.target.value == 1) {
+                        setModalTerms(true);
+                      }
+
+                      setStreamingStatus(e.target.value);
+                    }}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                   >
                     <option value="0">Select Status</option>
                     <option value="1">Active</option>
                     <option value="0">Inactive</option>
                   </select>
+                </div>
+
+                <div>
+                  <ChangePhotoComponent />
                 </div>
 
                 <div>
@@ -350,6 +363,13 @@ export default function Component({ params }) {
           GFF {finalData?.edition?.nombre} - {finalData?.edition?.anio}
         </h1>
       </div>
+
+      <AceptTermsAndConditionsComponent
+        modalTerms={modalTerms}
+        setModalTerms={setModalTerms}
+        finalData={finalData}
+        setStreamingStatus={setStreamingStatus}
+      />
     </>
   );
 }
