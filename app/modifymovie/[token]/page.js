@@ -14,6 +14,7 @@ import { Autocomplete, Button, TextField } from "@mui/material";
 import { axiosAPIPost } from "@/lib/api/APIPost";
 import ChangePhotoComponent from "@/app/components/ChangePhotoComponent/ChangePhotoComponent";
 import AceptTermsAndConditionsComponent from "@/app/components/AceptTermsAndConditionsComponent/AceptTermsAndConditionsComponent";
+import UploadImageToWordpressComponent from "@/app/components/UploadImageToWordpressComponent/UploadImageToWordpressComponent";
 
 export default function Component({ params }) {
   const certificateRef = useRef(null);
@@ -117,6 +118,7 @@ export default function Component({ params }) {
         />
       </Head>
       {loading && <LoadingScreenComponent />}
+
       <div className="min-h-screen bg-black flex justify-center py-6 px-4 sm:px-6 lg:px-8 fondoLogin items-center">
         <div className="w-full max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -234,6 +236,11 @@ export default function Component({ params }) {
                   Save Movie Configuration
                 </button>
               </div>
+
+              <UploadImageToWordpressComponent
+                finalData={finalData}
+                setLoading={setLoading}
+              />
             </div>
             <div className="lg:col-span-3 space-y-4 sm:space-y-6">
               <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
