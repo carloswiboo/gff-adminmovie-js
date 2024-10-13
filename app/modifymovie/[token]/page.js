@@ -240,6 +240,7 @@ export default function Component({ params }) {
               <UploadImageToWordpressComponent
                 finalData={finalData}
                 setLoading={setLoading}
+                tokendata={params.token}
               />
             </div>
             <div className="lg:col-span-3 space-y-4 sm:space-y-6">

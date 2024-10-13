@@ -1,78 +1,38 @@
-import { NextResponse } from "next/server";
-import formidable from "formidable";
-import FormData from "form-data";
-import fs from "fs";
+import { verifyToken } from "@/lib/createToken";
+import prisma from "@/lib/prisma";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+export const revalidate = 0;
 
-export async function POST(request) {
-  const form = formidable({ multiples: true });
+export async function POST(request, { params }) {
+  try {
+    let body = await request.json();
+    let { tokendata, urlImage, typeImage, submission_id } = body;
 
-  // Convierte el `request` de Next.js en un `Buffer` para que `formidable` pueda procesarlo
-  const buffer = await request.arrayBuffer();
-  const req = new ReadableStream({
-    start(controller) {
-      controller.enqueue(new Uint8Array(buffer));
-      controller.close();
-    },
-  }).getReader();
+    debugger;
 
-  return new Promise((resolve, reject) => {
-    form.parse(req, async (err, fields, files) => {
-      if (err) {
-        resolve(
-          NextResponse.json(
-            { message: "Error parsing the file" },
-            { status: 500 }
-          )
-        );
-        return;
-      }
-
-      const imageFile = files.image;
-      const formData = new FormData();
-      formData.append(
-        "file",
-        fs.createReadStream(imageFile.filepath),
-        imageFile.originalFilename
+    if (!tokendata || !urlImage || !typeImage || !submission_id) {
+      throw new Error(
+        "Missing required parameters: tokendata, urlImage, typeImage or submission_id"
       );
-      formData.append("title", "Imagen subida desde Next.js");
-      formData.append("status", "publish");
+    }
+    const token = await verifyToken(tokendata);
 
-      const username = process.env.WP_USERNAME;
-      const appPassword = process.env.WP_APP_PASSWORD;
-      const auth = Buffer.from(`${username}:${appPassword}`).toString("base64");
+    if (!token) {
+      return Response.json({ error: "Invalid Token" }, { status: 401 });
+    }
 
-      try {
-        const response = await fetch(
-          "https://gironafilmfestival.com/wp-json/wp/v2/media",
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Basic ${auth}`,
-            },
-            body: formData,
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`Error uploading image: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        resolve(
-          NextResponse.json(
-            { message: "Image uploaded successfully", data },
-            { status: 200 }
-          )
-        );
-      } catch (error) {
-        resolve(NextResponse.json({ message: error.message }, { status: 500 }));
-      }
+    const result = await prisma.catalogo.update({
+      where: {
+        submission_id: parseInt(submission_id),
+      },
+      data: {
+        [typeImage]: urlImage, // No need to stringify, Prisma handles it
+        update_date: new Date(),
+      },
     });
-  });
+
+    return Response.json(result === null ? [] : result, { status: 200 });
+  } catch (e) {
+    return Response.json({ error: e.message }, { status: 500 });
+  }
 }

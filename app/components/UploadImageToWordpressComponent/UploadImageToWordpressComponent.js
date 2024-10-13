@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { axiosAPIPost } from "@/lib/api/APIPost";
 
 export default function UploadImageToWordpressComponent(props) {
   const [status, setStatus] = useState("");
@@ -46,7 +47,24 @@ export default function UploadImageToWordpressComponent(props) {
       if (response.ok) {
         const data = await response.json();
         props.setLoading(false);
-        setStatus(`File uploaded successfully: ${data.source_url}`);
+
+        let finalArreglo = {
+          tokendata: props.tokendata,
+          submission_id: props?.finalData?.movie?.submission_id,
+          urlImage: data.source_url,
+          typeImage: imageType,
+        };
+
+        axiosAPIPost("/api/uploadimage", {}, finalArreglo).then((resultado) => {
+          if (resultado.status !== 200) {
+            setLoading(false);
+            return;
+          }
+          window.location.reload();
+          setLoading(false);
+        });
+
+        setStatus(`File uploaded successfully`);
       } else {
         const errorData = await response.json();
         props.setLoading(false);
@@ -140,9 +158,11 @@ export default function UploadImageToWordpressComponent(props) {
                     className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                   >
                     <option value="">Choose an image type...</option>
-                    <option value="cover">Cover</option>
-                    <option value="support">Support</option>
-                    <option value="director">Director's Photo</option>
+                    <option value="urlImagenPortada">Cover</option>
+                    <option value="urlImagenFondo">Support</option>
+                    <option value="urlImagenApoyo">
+                      Director&apos;s Photo
+                    </option>
                   </Field>
                   <ErrorMessage
                     name="imageType"

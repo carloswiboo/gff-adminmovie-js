@@ -16,8 +16,6 @@ export async function GET(request, { params }) {
     LIMIT 1
   `;
 
-    debugger;
-
     const resultQueryDOS = await prisma.$queryRaw`
 SELECT * FROM ediciones
 WHERE idedicion = ${parseInt(resultQuery[0].idedicion)}
