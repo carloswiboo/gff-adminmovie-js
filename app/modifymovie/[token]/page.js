@@ -158,10 +158,6 @@ export default function Component({ params }) {
                 </div>
 
                 <div>
-                  <ChangePhotoComponent />
-                </div>
-
-                <div>
                   <div className="flex flex-wrap gap-2 mb-2">
                     <Button
                       variant="text"

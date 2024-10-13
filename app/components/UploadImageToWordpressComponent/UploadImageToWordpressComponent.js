@@ -212,9 +212,13 @@ export default function UploadImageToWordpressComponent(props) {
                       className="w-full h-40 object-cover transition-transform duration-300 transform group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <span className="text-white text-sm font-medium">
+                      <a
+                        className="text-white text-sm font-medium"
+                        href={props.finalData.movie.urlImagenPortada}
+                        target="_blank"
+                      >
                         View Cover
-                      </span>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -226,14 +230,18 @@ export default function UploadImageToWordpressComponent(props) {
                   </h3>
                   <div className="relative overflow-hidden rounded-md">
                     <img
-                      src={props.finalData.movie.urlImagenFondo}
+                      src={props?.finalData?.movie?.urlImagenFondo}
                       alt="Background"
                       className="w-full h-40 object-cover transition-transform duration-300 transform group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <span className="text-white text-sm font-medium">
+                      <a
+                        className="text-white text-sm font-medium"
+                        href={props?.finalData?.movie?.urlImagenFondo}
+                        target="_blank"
+                      >
                         View Background
-                      </span>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -241,18 +249,22 @@ export default function UploadImageToWordpressComponent(props) {
               {props?.finalData?.movie?.urlImagenApoyo && (
                 <div className="group">
                   <h3 className="text-sm font-medium text-gray-700 mb-1">
-                    Support Image
+                    Director&apos;s Photo
                   </h3>
                   <div className="relative overflow-hidden rounded-md">
                     <img
-                      src={props.finalData.movie.urlImagenApoyo}
+                      src={props?.finalData?.movie?.urlImagenApoyo}
                       alt="Support"
                       className="w-full h-40 object-cover transition-transform duration-300 transform group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <span className="text-white text-sm font-medium">
-                        View Support
-                      </span>
+                      <a
+                        className="text-white text-sm font-medium"
+                        href={props?.finalData?.movie?.urlImagenApoyo}
+                        target="_blank"
+                      >
+                        Director&apos;s Photo
+                      </a>
                     </div>
                   </div>
                 </div>
