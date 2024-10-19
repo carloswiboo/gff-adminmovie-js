@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { axiosAPIPost } from "@/lib/api/APIPost";
+import toast from "react-hot-toast";
 
 export default function UploadImageToWordpressComponent(props) {
   const [status, setStatus] = useState("");
@@ -15,7 +16,7 @@ export default function UploadImageToWordpressComponent(props) {
         (value) =>
           value && (value.type === "image/jpeg" || value.type === "image/png")
       ),
-    imageType: Yup.string().required("Please select an image type"),
+    imageType: Yup.string().required("Please select an image type")
   });
 
   const handleSubmit = async (values) => {
@@ -38,9 +39,9 @@ export default function UploadImageToWordpressComponent(props) {
           method: "POST",
           headers: {
             Authorization:
-              "Basic " + btoa("dataapp:H8RI NWoz Dc75 NJAD 8YQP Ynjp"),
+              "Basic " + btoa("dataapp:H8RI NWoz Dc75 NJAD 8YQP Ynjp")
           },
-          body: formData,
+          body: formData
         }
       );
 
@@ -52,7 +53,7 @@ export default function UploadImageToWordpressComponent(props) {
           tokendata: props.tokendata,
           submission_id: props?.finalData?.movie?.submission_id,
           urlImage: data.source_url,
-          typeImage: imageType,
+          typeImage: imageType
         };
 
         axiosAPIPost("/api/uploadimage", {}, finalArreglo).then((resultado) => {
@@ -202,9 +203,22 @@ export default function UploadImageToWordpressComponent(props) {
             <div className="space-y-4">
               {props?.finalData?.movie?.urlImagenPortada && (
                 <div className="group">
-                  <h3 className="text-sm font-medium text-gray-700 mb-1">
-                    Cover Image
-                  </h3>
+                  <div className=" flex flex-row justify-between items-center mb-3">
+                    <h3 className="text-sm font-medium text-gray-700 mb-1">
+                      Cover Image
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        Formik.setFieldValue("imageType", "urlImagenPortada");
+                        toast.success("Now you can upload a new cover image");
+                      }}
+                      className="rounded bg-white px-2 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                    >
+                      Upload
+                    </button>
+                  </div>
+
                   <div className="relative overflow-hidden rounded-md">
                     <img
                       src={props.finalData.movie.urlImagenPortada}
@@ -225,9 +239,24 @@ export default function UploadImageToWordpressComponent(props) {
               )}
               {props?.finalData?.movie?.urlImagenFondo && (
                 <div className="group">
-                  <h3 className="text-sm font-medium text-gray-700 mb-1">
-                    Background Image
-                  </h3>
+                  <div className=" flex flex-row justify-between items-center mb-3">
+                    <h3 className="text-sm font-medium text-gray-700 mb-1">
+                      Background Image
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        Formik.setFieldValue("imageType", "urlImagenFondo");
+                        toast.success(
+                          "Now you can upload a new background image"
+                        );
+                      }}
+                      className="rounded bg-white px-2 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                    >
+                      Upload
+                    </button>
+                  </div>
+
                   <div className="relative overflow-hidden rounded-md">
                     <img
                       src={props?.finalData?.movie?.urlImagenFondo}
@@ -248,9 +277,24 @@ export default function UploadImageToWordpressComponent(props) {
               )}
               {props?.finalData?.movie?.urlImagenApoyo && (
                 <div className="group">
-                  <h3 className="text-sm font-medium text-gray-700 mb-1">
-                    Director&apos;s Photo
-                  </h3>
+                  <div className=" flex flex-row justify-between items-center mb-3">
+                    <h3 className="text-sm font-medium text-gray-700 mb-1">
+                      Director&apos;s Photo
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        Formik.setFieldValue("imageType", "urlImagenApoyo");
+                        toast.success(
+                          "Now you can upload a new Director's Photo"
+                        );
+                      }}
+                      className="rounded bg-white px-2 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                    >
+                      Upload
+                    </button>
+                  </div>
+
                   <div className="relative overflow-hidden rounded-md">
                     <img
                       src={props?.finalData?.movie?.urlImagenApoyo}
