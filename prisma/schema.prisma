@@ -63,6 +63,7 @@ model catalogo {
   comentarios             String?                   @db.Text
   carousel                Int?                      @default(0)
   email                   String?                   @db.VarChar(90)
+  idvimeo                 String?                   @db.VarChar(300)
   ediciones               ediciones?                @relation(fields: [idedicion], references: [idedicion], onDelete: NoAction, onUpdate: NoAction, map: "edicion_catalogo")
   reproduccionpeliculas   reproduccionpeliculas[]
   sesiones_cines_catalogo sesiones_cines_catalogo[]
@@ -182,6 +183,7 @@ model menuprincipal {
   update_date      DateTime? @default(now()) @db.Timestamp(0)
   status           Int?      @default(1)
   orden            Int?
+  nuevaapp         Int?      @default(0)
 }
 
 model metodospago {
