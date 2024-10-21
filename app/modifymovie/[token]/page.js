@@ -15,6 +15,7 @@ import { axiosAPIPost } from "@/lib/api/APIPost";
 import ChangePhotoComponent from "@/app/components/ChangePhotoComponent/ChangePhotoComponent";
 import AceptTermsAndConditionsComponent from "@/app/components/AceptTermsAndConditionsComponent/AceptTermsAndConditionsComponent";
 import UploadImageToWordpressComponent from "@/app/components/UploadImageToWordpressComponent/UploadImageToWordpressComponent";
+import toast from "react-hot-toast";
 
 export default function Component({ params }) {
   const certificateRef = useRef(null);
@@ -53,14 +54,14 @@ export default function Component({ params }) {
     element.style.display = "block";
     const canvas = await html2canvas(element, {
       useCORS: true,
-      allowTaint: false,
+      allowTaint: false
     });
     element.style.display = "none";
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF({
       orientation: "landscape",
       unit: "px",
-      format: [1056, 816],
+      format: [1056, 816]
     });
     pdf.addImage(imgData, "PNG", 0, 0, 1056, 816);
     pdf.save("certificado.pdf");
@@ -146,12 +147,12 @@ export default function Component({ params }) {
                       if (e.target.value == 1) {
                         setModalTerms(true);
                       }
-
+                      debugger;
                       setStreamingStatus(e.target.value);
                     }}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                   >
-                    <option value="0">Select Status</option>
+                    <option value="">Select Status</option>
                     <option value="1">Active</option>
                     <option value="0">Inactive</option>
                   </select>
@@ -202,6 +203,11 @@ export default function Component({ params }) {
                 <button
                   type="submit"
                   onClick={() => {
+                    if (streamingStatus == "") {
+                      toast.error("Please select a streaming status");
+                      return;
+                    }
+
                     setLoading(true);
 
                     let finalArreglo = {
@@ -210,7 +216,7 @@ export default function Component({ params }) {
                       ),
                       mostrarStreaming: streamingStatus,
                       tokendata: params.token,
-                      submission_id: finalData?.movie?.submission_id,
+                      submission_id: finalData?.movie?.submission_id
                     };
 
                     axiosAPIPost(
@@ -218,6 +224,7 @@ export default function Component({ params }) {
                       {},
                       finalArreglo
                     ).then((resultado) => {
+                      debugger;
                       if (resultado.status !== 200) {
                         setLoading(false);
                         return;
@@ -295,7 +302,7 @@ export default function Component({ params }) {
           backgroundImage: "url('/templatediploma.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
-          padding: "20px",
+          padding: "20px"
         }}
       >
         <h1
@@ -308,7 +315,7 @@ export default function Component({ params }) {
             textAlign: "center",
             fontWeight: "bold",
             color: "#ffcc66",
-            textTransform: "uppercase",
+            textTransform: "uppercase"
           }}
         >
           <span style={{ fontSize: "36px" }}>
@@ -327,7 +334,7 @@ export default function Component({ params }) {
             textAlign: "center",
             fontWeight: "bold",
             color: "#7a3700",
-            textTransform: "uppercase",
+            textTransform: "uppercase"
           }}
         >
           <span>{finalData?.movie?.detalle["Project Title"]}</span>
@@ -361,7 +368,7 @@ export default function Component({ params }) {
             textAlign: "right",
             fontWeight: "",
             color: "#ffcc66",
-            textTransform: "uppercase",
+            textTransform: "uppercase"
           }}
         >
           GFF {finalData?.edition?.nombre} - {finalData?.edition?.anio}
