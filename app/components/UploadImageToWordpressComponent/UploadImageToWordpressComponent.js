@@ -207,16 +207,6 @@ export default function UploadImageToWordpressComponent(props) {
                     <h3 className="text-sm font-medium text-gray-700 mb-1">
                       Cover Image
                     </h3>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        Formik.setFieldValue("imageType", "urlImagenPortada");
-                        toast.success("Now you can upload a new cover image");
-                      }}
-                      className="rounded bg-white px-2 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                    >
-                      Upload
-                    </button>
                   </div>
 
                   <div className="relative overflow-hidden rounded-md">
@@ -243,18 +233,6 @@ export default function UploadImageToWordpressComponent(props) {
                     <h3 className="text-sm font-medium text-gray-700 mb-1">
                       Background Image
                     </h3>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        Formik.setFieldValue("imageType", "urlImagenFondo");
-                        toast.success(
-                          "Now you can upload a new background image"
-                        );
-                      }}
-                      className="rounded bg-white px-2 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                    >
-                      Upload
-                    </button>
                   </div>
 
                   <div className="relative overflow-hidden rounded-md">
@@ -281,18 +259,6 @@ export default function UploadImageToWordpressComponent(props) {
                     <h3 className="text-sm font-medium text-gray-700 mb-1">
                       Director&apos;s Photo
                     </h3>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        Formik.setFieldValue("imageType", "urlImagenApoyo");
-                        toast.success(
-                          "Now you can upload a new Director's Photo"
-                        );
-                      }}
-                      className="rounded bg-white px-2 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                    >
-                      Upload
-                    </button>
                   </div>
 
                   <div className="relative overflow-hidden rounded-md">

@@ -23,6 +23,25 @@ AND status = 1
 LIMIT 1
 `;
 
+    debugger;
+
+    if (resultQueryDOS[0].mostrarPremios == 0) {
+      const judgingStatus =
+        resultQuery[0].detalle["Judging Status"].toUpperCase();
+      const validStatuses = [
+        "SELECTED",
+        "AWARD WINNER",
+        "FINALIST",
+        "NOMINEE",
+        "HONORABLE MENTION",
+        "SEMI-FINALIST",
+      ];
+
+      if (validStatuses.includes(judgingStatus)) {
+        resultQuery[0].detalle["Judging Status"] = "Selected";
+      }
+    }
+
     let finalData = {
       movie: { ...resultQuery[0] },
       edition: { ...resultQueryDOS[0] },
