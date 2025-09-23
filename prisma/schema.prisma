@@ -64,6 +64,7 @@ model catalogo {
   carousel                Int?                      @default(0)
   email                   String?                   @db.VarChar(90)
   idvimeo                 String?                   @db.VarChar(300)
+  detalleraw              Json?
   ediciones               ediciones?                @relation(fields: [idedicion], references: [idedicion], onDelete: NoAction, onUpdate: NoAction, map: "edicion_catalogo")
   reproduccionpeliculas   reproduccionpeliculas[]
   sesiones_cines_catalogo sesiones_cines_catalogo[]
@@ -412,6 +413,8 @@ model usuarios {
   stripe_price_id        String?                 @db.VarChar(1000)
   stripe_subscription_id String?                 @db.VarChar(1000)
   subscription_end_date  DateTime?               @db.DateTime(0)
+  loginCode              String?                 @db.VarChar(45)
+  loginHistory           loginHistory[]
   reproduccionpeliculas  reproduccionpeliculas[]
   usuario_pagos          usuario_pagos[]
   puestos                puestos?                @relation(fields: [idpuesto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "idpuesto_puestos")
@@ -434,4 +437,26 @@ model watchlist {
 
   @@index([submission_id], map: "watchlist_catalogo_fk")
   @@index([idusuario], map: "watchlist_usuario_fk_idx")
+}
+
+model hook_log {
+  idhook_log    Int       @id @default(autoincrement())
+  submission_id Int?
+  data          Json?
+  creation_date DateTime? @default(now()) @db.DateTime(0)
+  status        Int?      @default(1)
+  event_name    String?   @db.VarChar(500)
+}
+
+model loginHistory {
+  idloginHistory Int       @id @default(autoincrement())
+  idusuario      Int?
+  loginTimestamp DateTime? @default(now()) @db.DateTime(0)
+  isActive       Int?
+  loginData      Json?
+  status         Int?
+  updatedAt      DateTime? @default(now()) @db.DateTime(0)
+  usuarios       usuarios? @relation(fields: [idusuario], references: [idusuario], onDelete: NoAction, onUpdate: NoAction, map: "FK_loginHistory_Usuarios")
+
+  @@index([idusuario], map: "FK_loginHistory_Usuarios_idx")
 }
