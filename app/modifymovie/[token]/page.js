@@ -24,17 +24,12 @@ export default function Component({ params }) {
   const [token, setToken] = useState(null);
   const [finalData, setFinalData] = useState({});
   const [loading, setLoading] = useState(true);
-
   const [modalTerms, setModalTerms] = useState(false);
-
   const [dataPaises, setDataPaises] = React.useState([]);
-
   const [dataPaisesSeleccionados, setDataPaisesSeleccionados] = React.useState(
     []
   );
-
   const [streamingStatus, setStreamingStatus] = React.useState("");
-
   React.useEffect(() => {
     setLoading(true);
     axiosAPIGet(
@@ -121,7 +116,7 @@ export default function Component({ params }) {
       </Head>
       {loading && <LoadingScreenComponent />}
 
-      <div className="min-h-screen bg-black flex justify-center py-6 px-4 sm:px-6 lg:px-8 fondoLogin items-center">
+      <div className="min-h-screen bg-zinc-100 dark:bg-gray-950 flex justify-center py-6 px-4 sm:px-6 lg:px-8  items-center">
         <div className="w-full max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div className="lg:col-span-9 bg-white p-4 sm:p-6 lg:p-8 rounded-lg shadow-md">

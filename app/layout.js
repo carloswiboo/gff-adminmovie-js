@@ -32,7 +32,7 @@ export default function RootLayout({ children }) {
             {children}
           </AppShell>
 
-          <Toaster 
+          <Toaster
             toastOptions={{
               className: 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white',
             }}
