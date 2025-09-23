@@ -5,6 +5,7 @@ import Head from "next/head";
 import React from "react";
 import * as Yup from "yup";
 import LoadingScreenComponent from "./components/LoadingScreenComponent/LoadingScreenComponent";
+import DarkModeToggle from "./components/DarkModeToggle/DarkModeToggle";
 
 export default function Component() {
   const [status, setStatus] = React.useState(null);
@@ -43,11 +44,15 @@ export default function Component() {
       </Head>
       {loading && <LoadingScreenComponent />}
       <div className="min-h-screen bg-black flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 fondoLogin">
+        {/* Dark mode toggle in top right corner */}
+      
+
         <div className="max-w-md w-full space-y-8">
           <div className=" text-center">
             <img
               src="https://www.gironafilmfestival.com/wp-content/uploads/2022/08/logo-girona-film-festival.png"
               className=" w-32 mx-auto mb-3"
+              alt="Girona Film Festival Logo"
             />
 
             <h2 className="mt-3 text-center text-2xl font-bold text-red-500">
@@ -75,7 +80,7 @@ export default function Component() {
               status === 200 && (
                 <a
                   href={"modifymovie/" + finalData}
-                  className="bg-green-100 w-full border border-green-400 text-green-700 px-4 py-3 rounded mx-auto text-center"
+                  className="bg-green-100 dark:bg-green-900 w-full border border-green-400 dark:border-green-600 text-green-700 dark:text-green-300 px-4 py-3 rounded mx-auto text-center hover:bg-green-200 dark:hover:bg-green-800 transition-colors"
                 >
                   Enter Now!
                 </a>
@@ -84,7 +89,7 @@ export default function Component() {
             {
               // Show the status of the request
               status === 400 && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded">
                   Error processing data, please try again
                 </div>
               )
@@ -102,12 +107,12 @@ export default function Component() {
                       name="submission_id"
                       type="text"
                       required
-                      className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                      className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-400 dark:focus:border-indigo-400 focus:z-10 sm:text-sm"
                       placeholder="Tracking Number (Begins with GFF...)"
                       {...formik.getFieldProps("submission_id")}
                     />
                     {formik.touched.submission_id &&
-                    formik.errors.submission_id ? (
+                      formik.errors.submission_id ? (
                       <div className="text-red-500 text-xs mt-1 mb-3">
                         {formik.errors.submission_id}
                       </div>
@@ -123,7 +128,7 @@ export default function Component() {
                       type="email"
                       autoComplete="email"
                       required
-                      className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                      className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-800 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-400 dark:focus:border-indigo-400 focus:z-10 sm:text-sm"
                       placeholder="The email you used in FilmFreeway to submit your movie"
                       {...formik.getFieldProps("email")}
                     />

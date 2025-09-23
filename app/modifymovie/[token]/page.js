@@ -16,6 +16,7 @@ import ChangePhotoComponent from "@/app/components/ChangePhotoComponent/ChangePh
 import AceptTermsAndConditionsComponent from "@/app/components/AceptTermsAndConditionsComponent/AceptTermsAndConditionsComponent";
 import UploadImageToWordpressComponent from "@/app/components/UploadImageToWordpressComponent/UploadImageToWordpressComponent";
 import toast from "react-hot-toast";
+import DarkModeToggle from "@/app/components/DarkModeToggle/DarkModeToggle";
 
 export default function Component({ params }) {
   const certificateRef = useRef(null);
@@ -119,6 +120,8 @@ export default function Component({ params }) {
         />
       </Head>
       {loading && <LoadingScreenComponent />}
+
+      <DarkModeToggle />
 
       <div className="min-h-screen bg-black flex justify-center py-6 px-4 sm:px-6 lg:px-8 fondoLogin items-center">
         <div className="w-full max-w-7xl">
@@ -346,7 +349,7 @@ export default function Component({ params }) {
                   {" "}
                   {
                     finalData?.movie?.detalle[
-                      "Project Title (Original Language)"
+                    "Project Title (Original Language)"
                     ]
                   }
                 </span>
