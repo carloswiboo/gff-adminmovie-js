@@ -2,6 +2,8 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { DarkModeProvider } from "./components/DarkModeProvider/DarkModeProvider";
+import Sidebar from "./components/Sidebar/Sidebar";
+import TopNavbar from "./components/TopNavbar/TopNavbar";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,10 +29,23 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300`}
       >
         <DarkModeProvider>
-          {children}
+          <div className="min-h-screen flex flex-col">
+            <TopNavbar />
+
+            <div className="flex flex-1">
+              {/* Sidebar will render differently per screen size */}
+              <Sidebar />
+
+              {/* Main content area */}
+              <div className="flex-1">
+                {children}
+              </div>
+            </div>
+          </div>
+
           <Toaster 
             toastOptions={{
-              className: 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white',
+              className: 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white',
             }}
           />
         </DarkModeProvider>

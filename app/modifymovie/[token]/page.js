@@ -121,8 +121,6 @@ export default function Component({ params }) {
       </Head>
       {loading && <LoadingScreenComponent />}
 
-      <DarkModeToggle />
-
       <div className="min-h-screen bg-black flex justify-center py-6 px-4 sm:px-6 lg:px-8 fondoLogin items-center">
         <div className="w-full max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
