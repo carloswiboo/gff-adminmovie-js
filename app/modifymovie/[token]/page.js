@@ -1,6 +1,6 @@
 "use client";
 
-import { DownloadIcon } from "lucide-react";
+import { Download } from "lucide-react";
 import React, { useRef, useEffect, useState } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -30,6 +30,9 @@ export default function Component({ params }) {
     []
   );
   const [streamingStatus, setStreamingStatus] = React.useState("");
+  // derived state: enable download only when judging status is not 'undecided'
+  const judgingStatusRaw = finalData?.movie?.detalle?.["Judging Status"];
+  const isDownloadEnabled = judgingStatusRaw && String(judgingStatusRaw).toLowerCase() !== "undecided";
   React.useEffect(() => {
     setLoading(true);
     axiosAPIGet(
@@ -45,23 +48,43 @@ export default function Component({ params }) {
   }, []);
 
   const handleDownloadPDF = async () => {
-    setLoading(true);
-    const element = certificateRef.current;
-    element.style.display = "block";
-    const canvas = await html2canvas(element, {
-      useCORS: true,
-      allowTaint: false
-    });
-    element.style.display = "none";
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF({
-      orientation: "landscape",
-      unit: "px",
-      format: [1056, 816]
-    });
-    pdf.addImage(imgData, "PNG", 0, 0, 1056, 816);
-    pdf.save("certificado.pdf");
-    setLoading(false);
+    // Guard: do nothing if download not enabled
+    if (!isDownloadEnabled) {
+      toast.error(
+        "Certificate download is disabled until the judging decision is available."
+      );
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const element = certificateRef.current;
+      // Make sure element is rendered and visible for html2canvas
+      element.style.display = "block";
+      // Scroll into view so remote fonts/images have a better chance to load
+      if (element.scrollIntoView) {
+        element.scrollIntoView({ behavior: "auto", block: "center" });
+      }
+
+      const canvas = await html2canvas(element, {
+        useCORS: true,
+        allowTaint: false
+      });
+      element.style.display = "none";
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "px",
+        format: [1056, 816]
+      });
+      pdf.addImage(imgData, "PNG", 0, 0, 1056, 816);
+      pdf.save("certificado.pdf");
+    } catch (err) {
+      console.error(err);
+      toast.error("An error occurred while generating the certificate PDF.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -116,8 +139,10 @@ export default function Component({ params }) {
       </Head>
       {loading && <LoadingScreenComponent />}
 
+
+
       <div className="min-h-screen bg-zinc-100 dark:bg-gray-950 flex justify-center py-6 px-4 sm:px-6 lg:px-8  items-center">
-        <div className="w-full max-w-7xl">
+        <div className="w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div className="lg:col-span-9 bg-white p-4 sm:p-6 lg:p-8 rounded-lg shadow-md">
               <h1 className="text-xl sm:text-2xl font-bold text-center mb-4 text-red-600">
@@ -260,10 +285,21 @@ export default function Component({ params }) {
                 </p>
                 <button
                   onClick={handleDownloadPDF}
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out"
+                  disabled={!isDownloadEnabled}
+                  title={
+                    isDownloadEnabled
+                      ? "Download certificate as PDF"
+                      : "Download disabled until the judging decision is available"
+                  }
+                  className={
+                    "w-full font-bold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out " +
+                    (isDownloadEnabled
+                      ? "bg-blue-500 hover:bg-blue-600 text-white"
+                      : "bg-gray-300 text-gray-600 cursor-not-allowed")
+                  }
                 >
-                  <DownloadIcon className="mr-2 h-5 w-5" />
-                  Download Certificate
+                  <Download className="mr-2 h-5 w-5" />
+                  {isDownloadEnabled ? "Download Certificate" : "Download (disabled)"}
                 </button>
               </div>
               <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
