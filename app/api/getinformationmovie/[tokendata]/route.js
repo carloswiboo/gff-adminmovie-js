@@ -23,7 +23,7 @@ AND status = 1
 LIMIT 1
 `;
 
-    debugger;
+    
 
     if (resultQueryDOS[0].mostrarPremios == 0) {
       const judgingStatus =

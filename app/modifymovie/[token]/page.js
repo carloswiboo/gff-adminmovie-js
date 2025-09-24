@@ -18,6 +18,10 @@ import UploadImageToWordpressComponent from "@/app/components/UploadImageToWordp
 import toast from "react-hot-toast";
 import DarkModeToggle from "@/app/components/DarkModeToggle/DarkModeToggle";
 
+// Nuevos imports para Tabs
+import { Tabs, Tab, Box } from "@mui/material";
+import UploadVideoToVimeoComponent from "@/app/components/UploadVideoToVimeoComponent/UploadVideoToVimeoComponent";
+
 export default function Component({ params }) {
   const certificateRef = useRef(null);
   const router = useRouter();
@@ -30,6 +34,9 @@ export default function Component({ params }) {
     []
   );
   const [streamingStatus, setStreamingStatus] = React.useState("");
+  // estado para Tabs
+  const [tabIndex, setTabIndex] = useState(0);
+
   // derived state: enable download only when judging status is not 'undecided'
   const judgingStatusRaw = finalData?.movie?.detalle?.["Judging Status"];
   const isDownloadEnabled = judgingStatusRaw && String(judgingStatusRaw).toLowerCase() !== "undecided";
@@ -46,6 +53,25 @@ export default function Component({ params }) {
       setDataPaises(response.data);
     });
   }, []);
+
+  // pequeño helper TabPanel
+  const TabPanel = ({ children, value, index, ...other }) => {
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && <Box sx={{ pt: 2 }}>{children}</Box>}
+      </div>
+    );
+  };
+
+  const handleChangeTab = (event, newValue) => {
+    setTabIndex(newValue);
+  };
 
   const handleDownloadPDF = async () => {
     // Guard: do nothing if download not enabled
@@ -144,6 +170,7 @@ export default function Component({ params }) {
       <div className="min-h-screen bg-zinc-100 dark:bg-gray-950 flex justify-center py-6 px-4 sm:px-6 lg:px-8  items-center">
         <div className="w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Left column: ahora con Tabs */}
             <div className="lg:col-span-9 bg-white p-4 sm:p-6 lg:p-8 rounded-lg shadow-md">
               <h1 className="text-xl sm:text-2xl font-bold text-center mb-4 text-red-600">
                 <MovieCreationIcon className="w-6 h-6 sm:w-8 sm:h-8 inline-block mr-2 " />{" "}
@@ -152,121 +179,148 @@ export default function Component({ params }) {
               <p className="text-sm sm:text-base text-gray-600 text-center mb-6">
                 Edit movie streaming information and geolocation.
               </p>
-              <div className="space-y-4 sm:space-y-6">
-                <div>
-                  <label
-                    htmlFor="streaming-status"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Streaming Status
-                  </label>
-                  <select
-                    id="streaming-status"
-                    name="streaming-status"
-                    value={streamingStatus}
-                    onChange={(e) => {
-                      if (e.target.value == 1) {
-                        setModalTerms(true);
-                      }
-                      debugger;
-                      setStreamingStatus(e.target.value);
-                    }}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                  >
-                    <option value="">Select Status</option>
-                    <option value="1">Active</option>
-                    <option value="0">Inactive</option>
-                  </select>
-                </div>
 
-                <div>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    <Button
-                      variant="text"
-                      onClick={() => {
-                        setDataPaisesSeleccionados(dataPaises);
-                      }}
-                      className="text-xs sm:text-sm"
+              {/* MUI Tabs */}
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs value={tabIndex} onChange={handleChangeTab} aria-label="movie tabs">
+                  <Tab label="Configuration" />
+                  <Tab label="Upload Video" />
+                  <Tab label="Upload Images" />
+                </Tabs>
+              </Box>
+
+              <TabPanel value={tabIndex} index={0}>
+                {/* Configuration content (anidado desde el código original) */}
+                <div className="space-y-4 sm:space-y-6">
+                  <div>
+                    <label
+                      htmlFor="streaming-status"
+                      className="block text-sm font-medium text-gray-700 mb-1"
                     >
-                      Select all countries
-                    </Button>
-                    <Button
-                      variant="text"
-                      onClick={() => {
-                        setDataPaisesSeleccionados([]);
+                      Streaming Status
+                    </label>
+                    <select
+                      id="streaming-status"
+                      name="streaming-status"
+                      value={streamingStatus}
+                      onChange={(e) => {
+                        if (e.target.value == 1) {
+                          setModalTerms(true);
+                        }
+                        debugger;
+                        setStreamingStatus(e.target.value);
                       }}
-                      className="text-xs sm:text-sm"
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     >
-                      Remove all countries
-                    </Button>
+                      <option value="">Select Status</option>
+                      <option value="1">Active</option>
+                      <option value="0">Inactive</option>
+                    </select>
                   </div>
-                  <Autocomplete
-                    multiple
-                    id="tags-standard"
-                    value={dataPaisesSeleccionados}
-                    options={dataPaises}
-                    getOptionLabel={(option) =>
-                      option.cca2 + " - " + option.name.common
-                    }
-                    onChange={(evento, valor) => {
-                      setDataPaisesSeleccionados(valor);
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        label="Select the countries where the movie will be available"
-                        placeholder="Countries"
-                      />
-                    )}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  onClick={() => {
-                    if (streamingStatus == "") {
-                      toast.error("Please select a streaming status");
-                      return;
-                    }
 
-                    setLoading(true);
-
-                    let finalArreglo = {
-                      paisesStreaming: dataPaisesSeleccionados.map(
-                        (pais) => pais.cca2
-                      ),
-                      mostrarStreaming: streamingStatus,
-                      tokendata: params.token,
-                      submission_id: finalData?.movie?.submission_id
-                    };
-
-                    axiosAPIPost(
-                      "/api/savemovieconfiguration",
-                      {},
-                      finalArreglo
-                    ).then((resultado) => {
-                      debugger;
-                      if (resultado.status !== 200) {
-                        setLoading(false);
+                  <div>
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      <Button
+                        variant="text"
+                        onClick={() => {
+                          setDataPaisesSeleccionados(dataPaises);
+                        }}
+                        className="text-xs sm:text-sm"
+                      >
+                        Select all countries
+                      </Button>
+                      <Button
+                        variant="text"
+                        onClick={() => {
+                          setDataPaisesSeleccionados([]);
+                        }}
+                        className="text-xs sm:text-sm"
+                      >
+                        Remove all countries
+                      </Button>
+                    </div>
+                    <Autocomplete
+                      multiple
+                      id="tags-standard"
+                      value={dataPaisesSeleccionados}
+                      options={dataPaises}
+                      getOptionLabel={(option) =>
+                        option.cca2 + " - " + option.name.common
+                      }
+                      onChange={(evento, valor) => {
+                        setDataPaisesSeleccionados(valor);
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          label="Select the countries where the movie will be available"
+                          placeholder="Countries"
+                        />
+                      )}
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    onClick={() => {
+                      if (streamingStatus == "") {
+                        toast.error("Please select a streaming status");
                         return;
                       }
-                      window.location.reload();
-                      setLoading(false);
-                    });
-                  }}
-                  className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out"
-                >
-                  <MovieCreationIcon className="mr-2 h-5 w-5" />
-                  Save Movie Configuration
-                </button>
-              </div>
 
-              <UploadImageToWordpressComponent
-                finalData={finalData}
-                setLoading={setLoading}
-                tokendata={params.token}
-              />
+                      setLoading(true);
+
+                      let finalArreglo = {
+                        paisesStreaming: dataPaisesSeleccionados.map(
+                          (pais) => pais.cca2
+                        ),
+                        mostrarStreaming: streamingStatus,
+                        tokendata: params.token,
+                        submission_id: finalData?.movie?.submission_id
+                      };
+
+                      axiosAPIPost(
+                        "/api/savemovieconfiguration",
+                        {},
+                        finalArreglo
+                      ).then((resultado) => {
+                        debugger;
+                        if (resultado.status !== 200) {
+                          setLoading(false);
+                          return;
+                        }
+                        window.location.reload();
+                        setLoading(false);
+                      });
+                    }}
+                    className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out"
+                  >
+                    <MovieCreationIcon className="mr-2 h-5 w-5" />
+                    Save Movie Configuration
+                  </button>
+                </div>
+              </TabPanel>
+
+              <TabPanel value={tabIndex} index={1}>
+                {/* Upload content */}
+                <UploadVideoToVimeoComponent
+                  finalData={finalData}
+                  setLoading={setLoading}
+                  tokendata={params.token}
+                />
+              </TabPanel>
+
+              <TabPanel value={tabIndex} index={2}>
+                {/* Upload content */}
+                <UploadImageToWordpressComponent
+                  finalData={finalData}
+                  setLoading={setLoading}
+                  tokendata={params.token}
+                />
+              </TabPanel>
             </div>
+
+            {/* Right column: sin cambios funcionales */}
             <div className="lg:col-span-3 space-y-4 sm:space-y-6">
               <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
                 <img
