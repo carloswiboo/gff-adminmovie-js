@@ -21,6 +21,7 @@ import DarkModeToggle from "@/app/components/DarkModeToggle/DarkModeToggle";
 // Nuevos imports para Tabs
 import { Tabs, Tab, Box } from "@mui/material";
 import UploadVideoToVimeoComponent from "@/app/components/UploadVideoToVimeoComponent/UploadVideoToVimeoComponent";
+import CrudSubtitlesComponent from "@/app/components/CrudSubtitlesComponent/CrudSubtitlesComponent";
 
 export default function Component({ params }) {
   const certificateRef = useRef(null);
@@ -304,6 +305,11 @@ export default function Component({ params }) {
               <TabPanel value={tabIndex} index={1}>
                 {/* Upload content */}
                 <UploadVideoToVimeoComponent
+                  finalData={finalData}
+                  setLoading={setLoading}
+                  tokendata={params.token}
+                />
+                <CrudSubtitlesComponent
                   finalData={finalData}
                   setLoading={setLoading}
                   tokendata={params.token}

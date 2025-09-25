@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 
 export default function UploadVideoToVimeoComponent(props) {
 
-  debugger;
+
   const fileVideoRef = useRef(null);
   const [videoProgress, setVideoProgress] = useState(0);
   const [videoStatus, setVideoStatus] = useState("idle"); // 'idle' | 'uploading' | 'done'
@@ -33,9 +33,7 @@ export default function UploadVideoToVimeoComponent(props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ filename: file.name, size: file.size, tokendata: tokendata ?? null })
       });
-
       const meta = await resp.json();
-
       if (!resp.ok || !meta?.uploadLink) {
         console.error('Upload creation failed:', meta);
         setVideoError(meta?.error || "Could not create upload on Vimeo");
@@ -67,6 +65,8 @@ export default function UploadVideoToVimeoComponent(props) {
             },
             onSuccess: () => {
               console.log('tus onSuccess');
+              toast.success("Upload complete!");
+              window.location.reload();
               resolve();
             }
           });
@@ -98,6 +98,7 @@ export default function UploadVideoToVimeoComponent(props) {
     }
   }
 
+
   return (
     <div className="max-w-2xl mx-auto p-4">
       <div className="bg-white shadow rounded-lg p-6">
@@ -106,89 +107,118 @@ export default function UploadVideoToVimeoComponent(props) {
           Upload your video directly to Vimeo using TUS. Select a file and click Upload Button bellow.
         </p>
 
-        {/* Aviso si ya existe un video en Vimeo */}
-        {props.finaldata?.movie?.response_vimeo && (
-          <div className="mb-4 p-3 rounded bg-green-100 text-green-800 text-sm font-semibold">
-            Ya existe un video en Vimeo para esta película.
+        {/* Si ya existe un video en Vimeo, solo muestra el aviso y nada más */}
+        {(props.finaldata?.movie?.response_vimeo || props.finalData?.movie?.response_vimeo) ? (
+          <div className="mb-4 p-3 rounded bg-green-100 text-green-800 text-sm font-semibold flex items-center justify-between">
+            <span>Ya existe un video en Vimeo para esta película.</span>
+            <button
+              className="ml-4 px-3 py-1 rounded bg-red-600 text-white text-xs font-semibold hover:bg-red-700"
+              onClick={async () => {
+                const videoUri =
+                  props.finaldata?.movie?.response_vimeo?.uri ||
+                  props.finalData?.movie?.response_vimeo?.uri;
+                if (!videoUri) {
+                  toast.error("No se encontró el URI del video para eliminar.");
+                  return;
+                }
+                if (!window.confirm("¿Seguro que deseas eliminar el video de Vimeo?")) return;
+                try {
+                  const resp = await fetch("/api/deletevideo", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      videoUri,
+                      tokendata: props?.tokendata ?? (params ? params.token : null),
+                    }),
+                  });
+                  const result = await resp.json();
+                  if (resp.ok && result.success) {
+                    toast.success("Video eliminado correctamente.");
+                    if (props.onDelete) props.onDelete(result);
+                  } else {
+                    toast.error(result.error || "Error al eliminar el video.");
+                  }
+                } catch (err) {
+                  toast.error("Error de red al eliminar el video.");
+                }
+              }}
+              type="button"
+            >
+              Eliminar video
+            </button>
           </div>
-        )}
-        {/* Renderiza el embed si existe */}
-        {props.finalData?.movie?.response_vimeo?.player_embed_url && (
-          <div className="mb-4">
-            <div dangerouslySetInnerHTML={{ __html: props.finalData.movie.response_vimeo.embed.html }} />
-          </div>
-        )}
-
-
-        <div className="flex flex-col sm:flex-row gap-3 items-start">
-          <input
-            ref={fileVideoRef}
-            type="file"
-            accept="video/*"
-            className="block w-full sm:w-auto text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
-              file:rounded-md file:border-0 file:text-sm file:font-semibold
-              file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-          />
-          <button
-            onClick={handleUploadVideo}
-            disabled={videoStatus === "uploading"}
-            className={`py-2 px-4 rounded-md text-white font-medium transition ${videoStatus === "uploading"
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-indigo-600 hover:bg-indigo-700"
-              }`}
-          >
-            {videoStatus === "uploading" ? "Uploading..." : "Upload"}
-          </button>
-        </div>
-
-        <div className="mt-4">
-          <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-            <div
-              className="h-3 bg-indigo-600 transition-all"
-              style={{ width: `${videoProgress}%` }}
-            />
-          </div>
-
-          {/* visible semantic progress element (accessible) */}
-          <div className="flex items-center justify-between mt-2 gap-3">
-            <progress
-              className="w-full h-2"
-              value={videoProgress}
-              max="100"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={videoProgress}
-            />
-            <div className="w-16 text-right text-xs font-medium text-gray-700">
-              {videoProgress}%
-            </div>
-          </div>
-
-          <div className="flex justify-between text-xs mt-2">
-            <span className="text-gray-600">
-              {videoStatus === "uploading"
-                ? `Uploading… ${videoProgress}%`
-                : videoStatus === "done"
-                  ? "Completed"
-                  : "Waiting"}
-            </span>
-            {videoUri && (
-              <a
-                href={videoUri}
-                target="_blank"
-                rel="noreferrer"
-                className="text-indigo-600 hover:underline"
+        ) : (
+          <>
+            <div className="flex flex-col sm:flex-row gap-3 items-start">
+              <input
+                ref={fileVideoRef}
+                type="file"
+                accept="video/*"
+                className="block w-full sm:w-auto text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
+                  file:rounded-md file:border-0 file:text-sm file:font-semibold
+                  file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+              />
+              <button
+                onClick={handleUploadVideo}
+                disabled={videoStatus === "uploading"}
+                className={`py-2 px-4 rounded-md text-white font-medium transition ${videoStatus === "uploading"
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-indigo-600 hover:bg-indigo-700"
+                  }`}
               >
-                View video
-              </a>
-            )}
-          </div>
-          {videoError && (
-            <p className="mt-2 text-sm text-red-600">{videoError}</p>
-          )}
-        </div>
+                {videoStatus === "uploading" ? "Uploading..." : "Upload"}
+              </button>
+            </div>
+
+            <div className="mt-4">
+              <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                <div
+                  className="h-3 bg-indigo-600 transition-all"
+                  style={{ width: `${videoProgress}%` }}
+                />
+              </div>
+
+              {/* visible semantic progress element (accessible) */}
+              <div className="flex items-center justify-between mt-2 gap-3">
+                <progress
+                  className="w-full h-2"
+                  value={videoProgress}
+                  max="100"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={videoProgress}
+                />
+                <div className="w-16 text-right text-xs font-medium text-gray-700">
+                  {videoProgress}%
+                </div>
+              </div>
+
+              <div className="flex justify-between text-xs mt-2">
+                <span className="text-gray-600">
+                  {videoStatus === "uploading"
+                    ? `Uploading… ${videoProgress}%`
+                    : videoStatus === "done"
+                      ? "Completed"
+                      : "Waiting"}
+                </span>
+                {videoUri && (
+                  <a
+                    href={videoUri}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-indigo-600 hover:underline"
+                  >
+                    View video
+                  </a>
+                )}
+              </div>
+              {videoError && (
+                <p className="mt-2 text-sm text-red-600">{videoError}</p>
+              )}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
 }
-

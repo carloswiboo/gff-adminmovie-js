@@ -57,7 +57,7 @@ export async function POST(request, { params }) {
       to: [
         "director@gironafilmfestival.com",
         "carlos@gironafilmfestival.com",
-
+        resultQuery[0].detalle.Email,
       ],
       subject: "Movie Administration - Here is your access link",
       html: html,
