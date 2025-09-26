@@ -337,7 +337,7 @@ export default function Component({ params }) {
                   alt="Girona Film Festival Logo"
                 />
               </div>
-              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md ">
                 <h2 className="text-lg sm:text-xl font-bold text-center mb-4 text-yellow-600">
                   <WorkspacePremiumIcon className="w-5 h-5 sm:w-6 sm:h-6 inline-block mr-2" />{" "}
                   Your Certificate
@@ -373,7 +373,7 @@ export default function Component({ params }) {
                   <strong> {finalData?.movie?.detalle["Project Title"]}</strong>
                 </p>
 
-                <p className="text-sm sm:text-base text-gray-600 text-center mb-4">
+                <p className="text-sm sm:text-base text-gray-600 text-center mb-4 !hidden">
                   <small>Judging Status</small> <br />
                   <strong>
                     {" "}

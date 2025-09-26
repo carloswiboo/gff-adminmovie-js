@@ -153,25 +153,35 @@ export default function UploadVideoToVimeoComponent(props) {
           </div>
         ) : (
           <>
-            <div className="flex flex-col sm:flex-row gap-3 items-start">
-              <input
-                ref={fileVideoRef}
-                type="file"
-                accept="video/*"
-                className="block w-full sm:w-auto text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
-                  file:rounded-md file:border-0 file:text-sm file:font-semibold
-                  file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-              />
-              <button
-                onClick={handleUploadVideo}
-                disabled={videoStatus === "uploading"}
-                className={`py-2 px-4 rounded-md text-white font-medium transition ${videoStatus === "uploading"
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-indigo-600 hover:bg-indigo-700"
-                  }`}
-              >
-                {videoStatus === "uploading" ? "Uploading..." : "Upload"}
-              </button>
+            <div className="flex flex-col sm:flex-row gap-4 items-end">
+              <div className="flex-1">
+                <label htmlFor="file-input" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Select video file
+                </label>
+                <input
+                  ref={fileVideoRef}
+                  id="file-input"
+                  type="file"
+                  accept="video/*"
+                  className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 file:mr-4 file:py-3 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700"
+                  aria-describedby="file_input_help"
+                />
+                <p id="file_input_help" className="mt-1 text-sm text-gray-500 dark:text-gray-300">
+                  MP4, AVI, MOV or other video formats (MAX. file size depends on Vimeo limits).
+                </p>
+              </div>
+              <div className="flex-none">
+                <button
+                  onClick={handleUploadVideo}
+                  disabled={videoStatus === "uploading"}
+                  className={`py-3 px-6 rounded-lg text-white font-medium transition shadow ${videoStatus === "uploading"
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-indigo-600 hover:bg-indigo-700"
+                    }`}
+                >
+                  {videoStatus === "uploading" ? "Uploading..." : "Upload"}
+                </button>
+              </div>
             </div>
 
             <div className="mt-4">
