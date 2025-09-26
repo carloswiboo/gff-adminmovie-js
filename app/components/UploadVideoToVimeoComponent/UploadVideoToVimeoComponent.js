@@ -44,6 +44,7 @@ export default function UploadVideoToVimeoComponent(props) {
       // Prepare state for upload
       setVideoStatus("uploading");
       setVideoProgress(0);
+      const toastId = toast.loading("Starting upload...", { id: 'upload-progress', duration: 4000, position: 'top-center' }); // Crear toast único con propiedades
 
       await new Promise((resolve, reject) => {
         try {
@@ -53,6 +54,7 @@ export default function UploadVideoToVimeoComponent(props) {
             metadata: { filename: file.name, filetype: file.type },
             onError: (err) => {
               console.error('tus onError:', err);
+              toast.error("Upload failed", { id: toastId }); // Actualizar el mismo toast a error
               reject(err);
             },
             onProgress: (bytesUploaded, bytesTotal) => {
@@ -61,11 +63,11 @@ export default function UploadVideoToVimeoComponent(props) {
               console.log('Progress:', calculatedProgress, '% -', bytesUploaded, 'of', bytesTotal, 'bytes');
               // Update state directly with the calculated value
               setVideoProgress(calculatedProgress);
-              toast.success(`Upload progress: ${calculatedProgress}%`);
+              toast.loading(`Upload progress: ${calculatedProgress}%`, { id: toastId }); // Actualizar el mismo toast (no crea nuevo)
             },
             onSuccess: () => {
               console.log('tus onSuccess');
-              toast.success("Upload complete!");
+              toast.success("Upload complete!", { id: toastId }); // Cambiar el mismo toast a success
               window.location.reload();
               resolve();
             }
@@ -75,6 +77,7 @@ export default function UploadVideoToVimeoComponent(props) {
           upload.start();
         } catch (startErr) {
           console.error('Error starting tus upload:', startErr);
+          toast.error("Error starting upload", { id: toastId }); // Actualizar a error
           reject(startErr);
         }
       });
@@ -107,10 +110,10 @@ export default function UploadVideoToVimeoComponent(props) {
           Upload your video directly to Vimeo using TUS. Select a file and click Upload Button bellow.
         </p>
 
-        {/* Si ya existe un video en Vimeo, solo muestra el aviso y nada más */}
+        {/* If a Vimeo video already exists, show notice only */}
         {(props.finaldata?.movie?.response_vimeo || props.finalData?.movie?.response_vimeo) ? (
           <div className="mb-4 p-3 rounded bg-green-100 text-green-800 text-sm font-semibold flex items-center justify-between">
-            <span>Ya existe un video en Vimeo para esta película.</span>
+            <span>There is already a Vimeo video for this movie.</span>
             <button
               className="ml-4 px-3 py-1 rounded bg-red-600 text-white text-xs font-semibold hover:bg-red-700"
               onClick={async () => {
@@ -118,10 +121,10 @@ export default function UploadVideoToVimeoComponent(props) {
                   props.finaldata?.movie?.response_vimeo?.uri ||
                   props.finalData?.movie?.response_vimeo?.uri;
                 if (!videoUri) {
-                  toast.error("No se encontró el URI del video para eliminar.");
+                  toast.error("Video URI not found for deletion.");
                   return;
                 }
-                if (!window.confirm("¿Seguro que deseas eliminar el video de Vimeo?")) return;
+                if (!window.confirm("Are you sure you want to delete the Vimeo video?")) return;
                 try {
                   const resp = await fetch("/api/deletevideo", {
                     method: "POST",
@@ -133,18 +136,19 @@ export default function UploadVideoToVimeoComponent(props) {
                   });
                   const result = await resp.json();
                   if (resp.ok && result.success) {
-                    toast.success("Video eliminado correctamente.");
+                    toast.success("Video deleted successfully.");
+                    window.location.reload();
                     if (props.onDelete) props.onDelete(result);
                   } else {
-                    toast.error(result.error || "Error al eliminar el video.");
+                    toast.error(result.error || "Error deleting the video.");
                   }
                 } catch (err) {
-                  toast.error("Error de red al eliminar el video.");
+                  toast.error("Network error while deleting the video.");
                 }
               }}
               type="button"
             >
-              Eliminar video
+              Delete video
             </button>
           </div>
         ) : (
@@ -178,40 +182,8 @@ export default function UploadVideoToVimeoComponent(props) {
                 />
               </div>
 
-              {/* visible semantic progress element (accessible) */}
-              <div className="flex items-center justify-between mt-2 gap-3">
-                <progress
-                  className="w-full h-2"
-                  value={videoProgress}
-                  max="100"
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuenow={videoProgress}
-                />
-                <div className="w-16 text-right text-xs font-medium text-gray-700">
-                  {videoProgress}%
-                </div>
-              </div>
 
-              <div className="flex justify-between text-xs mt-2">
-                <span className="text-gray-600">
-                  {videoStatus === "uploading"
-                    ? `Uploading… ${videoProgress}%`
-                    : videoStatus === "done"
-                      ? "Completed"
-                      : "Waiting"}
-                </span>
-                {videoUri && (
-                  <a
-                    href={videoUri}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-indigo-600 hover:underline"
-                  >
-                    View video
-                  </a>
-                )}
-              </div>
+
               {videoError && (
                 <p className="mt-2 text-sm text-red-600">{videoError}</p>
               )}

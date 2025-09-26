@@ -184,13 +184,15 @@ export default function Component({ params }) {
               {/* MUI Tabs */}
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Tabs value={tabIndex} onChange={handleChangeTab} aria-label="movie tabs">
-                  <Tab label="Configuration" />
+
                   <Tab label="Upload Video" />
+                  <Tab label="Configuration" />
+
                   <Tab label="Upload Images" />
                 </Tabs>
               </Box>
 
-              <TabPanel value={tabIndex} index={0}>
+              <TabPanel value={tabIndex} index={1}>
                 {/* Configuration content (anidado desde el código original) */}
                 <div className="space-y-4 sm:space-y-6">
                   <div>
@@ -302,7 +304,7 @@ export default function Component({ params }) {
                 </div>
               </TabPanel>
 
-              <TabPanel value={tabIndex} index={1}>
+              <TabPanel value={tabIndex} index={0}>
                 {/* Upload content */}
                 <UploadVideoToVimeoComponent
                   finalData={finalData}
