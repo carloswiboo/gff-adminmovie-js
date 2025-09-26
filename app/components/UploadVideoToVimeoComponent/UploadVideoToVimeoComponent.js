@@ -103,9 +103,9 @@ export default function UploadVideoToVimeoComponent(props) {
 
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
+    <div className="max-w-5xl mx-auto p-4">
       <div className="bg-white shadow rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-2 text-indigo-800">Upload video to Vimeo</h2>
+        <h2 className="text-xl font-semibold mb-2 text-indigo-800">Upload video to our Festival</h2>
         <p className="text-sm text-gray-600 mb-4">
           Upload your video directly to Vimeo using TUS. Select a file and click Upload Button bellow.
         </p>
@@ -113,7 +113,7 @@ export default function UploadVideoToVimeoComponent(props) {
         {/* If a Vimeo video already exists, show notice only */}
         {(props.finaldata?.movie?.response_vimeo || props.finalData?.movie?.response_vimeo) ? (
           <div className="mb-4 p-3 rounded bg-green-100 text-green-800 text-sm font-semibold flex items-center justify-between">
-            <span>There is already a Vimeo video for this movie.</span>
+            <span>There is already a video for this movie.</span>
             <button
               className="ml-4 px-3 py-1 rounded bg-red-600 text-white text-xs font-semibold hover:bg-red-700"
               onClick={async () => {

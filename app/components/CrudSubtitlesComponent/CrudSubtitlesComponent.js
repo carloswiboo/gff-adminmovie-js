@@ -143,7 +143,7 @@ export default function CrudSubtitlesComponent(props) {
     <div className="max-w-5xl mx-auto p-4 md:p-8">
       {/* Info message about video processing time */}
       <div className="mb-6 p-4 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-900 text-sm">
-        If you just uploaded your movie, please wait at least 30 minutes before it becomes available. 
+        If you just uploaded your movie, please wait at least 30 minutes before it becomes available.
         You may see a message indicating it has not loaded yet. If after this time it is still unavailable, please contact us.
       </div>
       {/* Notice if there is already a Vimeo video */}
@@ -174,7 +174,7 @@ export default function CrudSubtitlesComponent(props) {
       {/* Only show the rest if there is a video */}
       {props.finalData?.movie?.response_vimeo ? (
         <>
-          <h1 className="text-2xl font-semibold mb-4">Manage Subtitles (Vimeo)</h1>
+          <h1 className="text-2xl font-semibold mb-4">Manage Subtitles</h1>
           <div className="flex flex-col md:flex-row gap-8">
             {/* Formulario de subida */}
             <div className="md:w-1/2 w-full">
@@ -330,8 +330,12 @@ export default function CrudSubtitlesComponent(props) {
                   </div>
                 ))}
               </div>
-              {/* Tip */}
-
+              {/* Mensaje si no hay tracks activos */}
+              {!loading && !languagesLoading && tracks.length > 0 && !tracks.some(t => t.active) && (
+                <div className="mt-4 p-4 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-900 text-sm">
+                  No active subtitles. You must activate at least one to display on the video.
+                </div>
+              )}
             </div>
           </div>
         </>
