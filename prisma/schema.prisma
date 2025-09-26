@@ -70,6 +70,8 @@ model catalogo {
   sesiones_cines_catalogo sesiones_cines_catalogo[]
   watchlist               watchlist[]
   response_vimeo          Json?
+  videoAutorizado         Int?
+
   @@index([idedicion], map: "edicion_catalogo_idx")
 }
 

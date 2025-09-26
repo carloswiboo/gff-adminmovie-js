@@ -113,7 +113,7 @@ export async function POST(request) {
                 if (rowSubmissionId) {
                     await prisma.$executeRaw`
                         UPDATE catalogo
-                        SET response_vimeo = NULL
+                        SET response_vimeo = NULL, videoAutorizado = 0
                         WHERE submission_id = ${(rowSubmissionId)}
                           AND status = 1
                     `;

@@ -149,7 +149,7 @@ export async function POST(request) {
                     const responseJson = JSON.stringify(result);
                     await prisma.$executeRaw`
                     UPDATE catalogo
-                    SET response_vimeo = ${responseJson}
+                    SET response_vimeo = ${responseJson}, videoAutorizado = 0
                     WHERE submission_id = ${(rowSubmissionId)}
                       AND status = 1
                   `;
