@@ -142,24 +142,29 @@ export default function Sidebar({ className = '' }) {
                                 </Link>
                             </li>
                             <li>
+                                <Link href="https://filmfreeway.com/" className="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <HiDocumentText className="w-5 h-5 text-gray-500 dark:text-gray-300" />
+                                    <span>Modify Movie Data</span>
+                                </Link>
+                            </li>
+                            <li>
                                 <Link href="https://app.gironafilmfestival.com/hoteles" className="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <HiDocumentText className="w-5 h-5 text-gray-500 dark:text-gray-300" />
                                     <span>Hotels</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link href="https://app.gironafilmfestival.com/transparencia" className="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <Link href="https://app.gironafilmfestival.com/programa/porpeliculas/8836" className="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <HiPhotograph className="w-5 h-5 text-gray-500 dark:text-gray-300" />
-                                    <span>Transparency</span>
+                                    <span>Catalogue</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link href="https://app.gironafilmfestival.com/donacion" className="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <Link href="https://filmfreeway.com/GironaFilmFestival/photos" className="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <HiPhotograph className="w-5 h-5 text-gray-500 dark:text-gray-300" />
-                                    <span>Donations</span>
+                                    <span>Media</span>
                                 </Link>
                             </li>
-
                         </ul>
 
                         {/* Promo card */}
