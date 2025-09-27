@@ -180,7 +180,7 @@ export default function CrudSubtitlesComponent(props) {
             <div className="md:w-1/2 w-full">
               <div className="flex flex-col gap-4 mb-6">
                 <input
-                  className="border rounded-lg p-2 flex-1"
+                  className="border rounded-lg p-2 flex-1 !hidden"
                   placeholder="Vimeo Video ID (e.g. 123456789)"
                   value={videoId}
                   onChange={e => setVideoId(e.target.value)}
