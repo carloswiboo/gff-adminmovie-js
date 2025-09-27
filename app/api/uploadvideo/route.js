@@ -78,7 +78,7 @@ export async function POST(request) {
             try {
                 const first = catalogMatches[0];
                 const detalleObj = typeof first.detalle === 'object' ? first.detalle : JSON.parse(first.detalle);
-                const projectTitle = detalleObj?.["Project Title"] ?? detalleObj?.project_title ?? null;
+                const projectTitle = (detalleObj?.["Project Title"] ?? detalleObj?.project_title ?? null) + ' - ' + submissionId;
                 const synopsis = detalleObj?.["Synopsis"] ?? detalleObj?.synopsis ?? detalleObj?.["Short Synopsis"] ?? null;
 
                 if ((!name || name === '') && projectTitle && String(projectTitle).trim() !== '') {
