@@ -103,6 +103,21 @@ export async function POST(request) {
             );
         }
 
+        // Configuración fija para Full HD 1080p
+        const qualityConfig = {
+            transcode: {
+                quality: 'hd',           // Vimeo HD quality (1080p)
+                video_codec: 'h264',     // H.264 codec
+                audio_codec: 'aac',      // AAC audio
+                fps: 30                  // 30 fps estándar
+            }
+        };
+
+        // Log de la configuración aplicada
+        console.log('Quality: Fixed Full HD 1080p');
+        console.log('Quality config applied:', qualityConfig);
+        console.log('Video details:', { name: videoName, size, filename });
+
         const result = await new Promise((resolve, reject) => {
             clientVimeoGff.request(
                 {
@@ -115,7 +130,8 @@ export async function POST(request) {
                         upload: {
                             approach: 'tus',
                             size
-                        }
+                        },
+                        ...qualityConfig
                     }
                 },
                 (err, body) => {

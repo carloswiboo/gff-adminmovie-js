@@ -4,6 +4,7 @@ import { Upload } from "tus-js-client";
 import { useParams } from "next/navigation";
 import toast from "react-hot-toast";
 
+
 export default function UploadVideoToVimeoComponent(props) {
 
 
@@ -12,6 +13,7 @@ export default function UploadVideoToVimeoComponent(props) {
   const [videoStatus, setVideoStatus] = useState("idle"); // 'idle' | 'uploading' | 'done'
   const [videoUri, setVideoUri] = useState(null);
   const [videoError, setVideoError] = useState("");
+
 
   // derive tokendata: prefer prop, otherwise get route param via Next.js useParams
   const params = useParams();
@@ -31,7 +33,11 @@ export default function UploadVideoToVimeoComponent(props) {
       const resp = await fetch("/api/uploadvideo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ filename: file.name, size: file.size, tokendata: tokendata ?? null })
+        body: JSON.stringify({ 
+          filename: file.name, 
+          size: file.size, 
+          tokendata: tokendata ?? null
+        })
       });
       const meta = await resp.json();
       if (!resp.ok || !meta?.uploadLink) {
@@ -153,36 +159,49 @@ export default function UploadVideoToVimeoComponent(props) {
           </div>
         ) : (
           <>
-            <div className="flex flex-col sm:flex-row gap-4 items-end">
-              <div className="flex-1">
-                <label htmlFor="file-input" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Select video file
-                </label>
-                <input
-                  ref={fileVideoRef}
-                  id="file-input"
-                  type="file"
-                  accept="video/*"
-                  className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 file:mr-4 file:py-3 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700"
-                  aria-describedby="file_input_help"
-                />
-                <p id="file_input_help" className="mt-1 text-sm text-gray-500 dark:text-gray-300">
-                  MP4, AVI, MOV or other video formats (MAX. file size depends on Vimeo limits).
-                </p>
+            <div className="space-y-4">
+              {/* Quality Information */}
+              <div className="p-4 rounded-lg border-2 bg-blue-50 text-blue-800 border-blue-200">
+                <div className="flex items-center space-x-3">
+                  <div className="text-2xl">📺</div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Full HD 1080p Quality</h3>
+                    <p className="text-sm mt-1">All videos will be processed in Full HD 1080p (1920x1080) with H.264 codec at 30fps for optimal quality and compatibility.</p>
+                  </div>
+                </div>
               </div>
-              <div className="flex-none">
-                <button
-                  onClick={handleUploadVideo}
-                  disabled={videoStatus === "uploading"}
-                  className={`py-3 px-6 rounded-lg text-white font-medium transition shadow ${videoStatus === "uploading"
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-indigo-600 hover:bg-indigo-700"
-                    }`}
-                >
-                  {videoStatus === "uploading" ? "Uploading..." : "Upload"}
-                </button>
-              </div>
-            </div>
+
+              {/* File Input */}
+              <div className="flex flex-col sm:flex-row gap-4 items-end">
+                <div className="flex-1">
+                  <label htmlFor="file-input" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Select video file
+                  </label>
+                  <input
+                    ref={fileVideoRef}
+                    id="file-input"
+                    type="file"
+                    accept="video/*"
+                    className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 file:mr-4 file:py-3 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700"
+                    aria-describedby="file_input_help"
+                  />
+                  <p id="file_input_help" className="mt-1 text-sm text-gray-500 dark:text-gray-300">
+                    MP4, AVI, MOV or other video formats (MAX. file size depends on Vimeo limits).
+                  </p>
+                </div>
+                <div className="flex-none">
+                  <button
+                    onClick={handleUploadVideo}
+                    disabled={videoStatus === "uploading"}
+                    className={`py-3 px-6 rounded-lg text-white font-medium transition shadow ${videoStatus === "uploading"
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-indigo-600 hover:bg-indigo-700"
+                      }`}
+                  >
+                    {videoStatus === "uploading" ? "Uploading..." : "Upload"}
+                  </button>
+                </div>
+              </div>\n            </div>
 
             <div className="mt-4">
               <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
