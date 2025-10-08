@@ -403,8 +403,8 @@ export default function Component({ params }) {
           style={{
             position: "absolute",
             top: "450px",
-            left: "300px",
-            right: "300px",
+            left: "200px",
+            right: "200px",
             fontSize: "30px",
             textAlign: "center",
             fontWeight: "bold",
