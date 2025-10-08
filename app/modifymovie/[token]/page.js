@@ -416,7 +416,7 @@ export default function Component({ params }) {
             {finalData?.movie?.detalle["Judging Status"]}
           </span>
           <br />
-          <span>{finalData?.movie?.detalle["Submission Categories"]}</span>
+          <span style={{ fontSize: "14px" }}>{finalData?.movie?.detalle["Submission Categories"]}</span>
         </h1>
         <h1
           style={{
