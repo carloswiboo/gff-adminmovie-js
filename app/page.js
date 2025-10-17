@@ -7,17 +7,32 @@ import * as Yup from "yup";
 import LoadingScreenComponent from "./components/LoadingScreenComponent/LoadingScreenComponent";
 import DarkModeToggle from "./components/DarkModeToggle/DarkModeToggle";
 
+
 export default function Component() {
   const [status, setStatus] = React.useState(null);
   const [finalData, setFinalData] = React.useState("");
-
   const [loading, setLoading] = React.useState(false);
+  // State to hold initial values from URL
+  const [initialValues, setInitialValues] = React.useState({
+    submission_id: "",
+    email: "",
+  });
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const trackingNumber = params.get("trackingNumber") || "";
+      const correo = params.get("correo") || "";
+      setInitialValues({
+        submission_id: trackingNumber,
+        email: correo,
+      });
+    }
+  }, []);
 
   const formik = useFormik({
-    initialValues: {
-      submission_id: "",
-      email: "",
-    },
+    enableReinitialize: true,
+    initialValues,
     validationSchema: Yup.object({
       submission_id: Yup.string().required("Submission ID is required"),
       email: Yup.string()
@@ -26,7 +41,6 @@ export default function Component() {
     }),
     onSubmit: (values) => {
       setLoading(true);
-
       axiosAPIPost("/api/askfortoken", {}, values).then((resultado) => {
         setStatus(resultado.status);
         if (resultado.status === 200) {
