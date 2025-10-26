@@ -25,6 +25,8 @@ import CrudSubtitlesComponent from "@/app/components/CrudSubtitlesComponent/Crud
 
 export default function Component({ params }) {
   const certificateRef = useRef(null);
+  // NUEVO: referencia para el laurel
+  const laurelRef = useRef(null);
   const router = useRouter();
   const [token, setToken] = useState(null);
   const [finalData, setFinalData] = useState({});
@@ -109,6 +111,43 @@ export default function Component({ params }) {
     } catch (err) {
       console.error(err);
       toast.error("An error occurred while generating the certificate PDF.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // NUEVO: función para descargar el laurel como PNG fondo transparente
+  const handleDownloadLaurelPNG = async () => {
+    if (!isDownloadEnabled) {
+      toast.error(
+        "Laurel download is disabled until the judging decision is available."
+      );
+      return;
+    }
+    try {
+      setLoading(true);
+      const element = laurelRef.current;
+      element.style.display = "block";
+      if (element.scrollIntoView) {
+        element.scrollIntoView({ behavior: "auto", block: "center" });
+      }
+      const canvas = await html2canvas(element, {
+        useCORS: true,
+        backgroundColor: null, // fondo transparente
+        allowTaint: false
+      });
+      element.style.display = "none";
+      const imgData = canvas.toDataURL("image/png");
+      // Descargar como PNG
+      const link = document.createElement("a");
+      link.href = imgData;
+      link.download = "laurel_certificate.png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error(err);
+      toast.error("An error occurred while generating the laurel PNG.");
     } finally {
       setLoading(false);
     }
@@ -337,6 +376,34 @@ export default function Component({ params }) {
                   alt="Girona Film Festival Logo"
                 />
               </div>
+
+              <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md ">
+                <h2 className="text-lg sm:text-xl font-bold text-center mb-4 text-yellow-600">
+                  <WorkspacePremiumIcon className="w-5 h-5 sm:w-6 sm:h-6 inline-block mr-2" />{" "}
+                  Your Laurel Certificate
+                </h2>
+                <p className="text-sm sm:text-base text-gray-600 text-center mb-4">
+                  Download your Laurel Certificate.
+                </p>
+                <button
+                  onClick={handleDownloadLaurelPNG}
+                  disabled={!isDownloadEnabled}
+                  title={
+                    isDownloadEnabled
+                      ? "Download laurel as PNG"
+                      : "Download disabled until the judging decision is available"
+                  }
+                  className={
+                    "w-full font-bold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out " +
+                    (isDownloadEnabled
+                      ? "bg-blue-500 hover:bg-blue-600 text-white"
+                      : "bg-gray-300 text-gray-600 cursor-not-allowed")
+                  }
+                >
+                  <Download className="mr-2 h-5 w-5" />
+                  {isDownloadEnabled ? "Download Laurel" : "Download (disabled)"}
+                </button>
+              </div>
               <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md ">
                 <h2 className="text-lg sm:text-xl font-bold text-center mb-4 text-yellow-600">
                   <WorkspacePremiumIcon className="w-5 h-5 sm:w-6 sm:h-6 inline-block mr-2" />{" "}
@@ -467,6 +534,55 @@ export default function Component({ params }) {
         >
           GFF {finalData?.edition?.nombre} - {finalData?.edition?.anio}
         </h1>
+      </div>
+
+      {/* NUEVO: Renderiza el laurel para exportar como PDF */}
+      <div
+        ref={laurelRef}
+        style={{
+          display: "none",
+          width: "1056px",
+          height: "816px",
+          position: "relative",
+          backgroundImage: "url('/fondolaurel.png')", // fondo laurel
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          padding: "0",
+        }}
+      >
+        {/* Solo el texto, sin SVG */}
+        <div
+          style={{
+            position: "absolute",
+            top: "220px",
+            left: "0",
+            right: "0",
+            width: "100%",
+            textAlign: "center",
+            color: "#000",
+            fontFamily: "Arial, sans-serif",
+          }}
+        >
+          <h1 style={{ fontSize: "42px", fontWeight: "bold", marginBottom: "24px" }}>
+            SELECTED
+          </h1>
+          <div style={{ fontSize: "22px", marginBottom: "18px" }}>
+            {finalData?.movie?.detalle["Submission Categories"] || "SUBMISSION CATEGORIES"}
+          </div>
+          <div style={{ fontSize: "22px", marginBottom: "18px" }}>
+            {finalData?.movie?.detalle["Project Title (Original Language)"] || "PROJECT TITLE (ORIGINAL LANGUAGE)"}
+          </div>
+          <div style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "18px" }}>
+            {finalData?.movie?.detalle["Project Title"] || "PROJECT TITLE"}
+          </div>
+          <div style={{ fontSize: "22px", marginBottom: "18px" }}>
+            {finalData?.movie?.detalle["Directors"] || "DIRECTORS"}
+          </div>
+          <div style={{ fontSize: "26px", fontWeight: "bold", marginTop: "32px" }}>
+            37 GIRONA FILM FESTIVAL - 2025
+          </div>
+        </div>
       </div>
 
       <AceptTermsAndConditionsComponent
