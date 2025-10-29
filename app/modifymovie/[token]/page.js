@@ -574,7 +574,7 @@ export default function Component({ params }) {
             {finalData?.movie?.detalle["Project Title (Original Language)"] || "PROJECT TITLE (ORIGINAL LANGUAGE)"}
           </div>
           <div style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "18px" }}>
-            {finalData?.movie?.detalle["Project Title"] || "PROJECT TITLE"}
+            {finalData?.movie?.detalle["Project Title (Original Language)"] || "PROJECT TITLE"}
           </div>
           <div style={{ fontSize: "22px", marginBottom: "18px" }}>
             {finalData?.movie?.detalle["Directors"] || "DIRECTORS"}
