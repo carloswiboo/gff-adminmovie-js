@@ -12,8 +12,6 @@ export async function GET(request) {
         const { searchParams } = new URL(request.url);
         const idvideovimeo = searchParams.get("idvideovimeo");
 
-
-        debugger;
         if (!idvideovimeo) {
             return Response.json({ error: "Missing idvideovimeo parameter" }, { status: 400 });
         }
@@ -23,6 +21,10 @@ export async function GET(request) {
             method: "GET",
             path: `/videos/${idvideovimeo}`
         });
+
+        // Obtener y sanitizar el nombre de la película
+        let movieName = (videoData.body && videoData.body.name) ? videoData.body.name : "movie";
+        movieName = movieName.replace(/[^a-zA-Z0-9_\-\.]/g, "_"); // reemplaza caracteres inválidos
 
         // 2. Buscar el archivo de video descargable
         let bestFile = videoData.body.files.find(f => f.rendition === "1080p");
@@ -41,34 +43,62 @@ export async function GET(request) {
         const videoResponse = await fetch(bestFile.link);
         const videoBuffer = await videoResponse.buffer();
 
-        // 4. Buscar subtítulos
-        const textTracks = videoData.body.texttracks || [];
+        // 4. Obtener subtítulos (pueden no estar en videoData.body => llamar al endpoint /texttracks)
+        let textTracks = (videoData.body && (videoData.body.texttracks || videoData.body.text_tracks)) || [];
+        if (!textTracks || textTracks.length === 0) {
+            try {
+                const tracksRes = await clientVimeoGff.request({
+                    method: "GET",
+                    path: `/videos/${idvideovimeo}/texttracks`
+                });
+                // tracksRes.body.data suele contener el array de tracks
+                textTracks = (tracksRes.body && (tracksRes.body.data || tracksRes.body)) || [];
+            } catch (err) {
+                // Si falla, continuar sin subtítulos
+                textTracks = [];
+            }
+        }
+debugger;
         let subtitleBuffers = [];
         for (const track of textTracks) {
-            if (track.link) {
-                const subRes = await fetch(track.link);
+            // diferentes campos que puede traer Vimeo para el link
+            const trackLink = track.link || track.download || track.uri || track.link_url || null;
+            if (!trackLink) continue;
+
+            try {
+                const subRes = await fetch(trackLink);
+                if (!subRes.ok) continue;
                 const subBuf = await subRes.buffer();
+
+                // elegir extensión/idioma de forma segura
+                const format = (track.format || "").toString().toLowerCase();
+                const ext = format === "vtt" || format === "webvtt" ? "vtt" : (format === "srt" ? "srt" : "vtt");
+                const lang = track.language || track.lang || track.locale || 'unknown';
+
                 subtitleBuffers.push({
-                    filename: `subtitle_${track.language || 'unknown'}.vtt`,
+                    filename: `subtitle_${lang}.${ext}`,
                     buffer: subBuf
                 });
+            } catch (err) {
+                // ignore individual subtitle errors
+                continue;
             }
         }
 
-        // 5. Crear el zip
+        // 5. Crear el zip con el nombre de la película
         const zip = new JSZip();
-        zip.file("movie.mp4", videoBuffer);
+        zip.file(`${movieName}.mp4`, videoBuffer);
         subtitleBuffers.forEach(sub => {
             zip.file(sub.filename, sub.buffer);
         });
         const zipBuffer = await zip.generateAsync({ type: "nodebuffer" });
 
-        // 6. Responder con el zip
+        // 6. Responder con el zip usando el nombre de la película
         return new Response(zipBuffer, {
             status: 200,
             headers: {
                 "Content-Type": "application/zip",
-                "Content-Disposition": "attachment; filename=movie_and_subtitles.zip"
+                "Content-Disposition": `attachment; filename=${movieName}_and_subtitles.zip`
             }
         });
     } catch (e) {
