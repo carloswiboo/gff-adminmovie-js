@@ -22,6 +22,8 @@ export async function GET(request) {
             path: `/videos/${idvideovimeo}`
         });
 
+
+
         // Obtener y sanitizar el nombre de la película
         let movieName = (videoData.body && videoData.body.name) ? videoData.body.name : "movie";
         movieName = movieName.replace(/[^a-zA-Z0-9_\-\.]/g, "_"); // reemplaza caracteres inválidos
@@ -58,7 +60,7 @@ export async function GET(request) {
                 textTracks = [];
             }
         }
-debugger;
+
         let subtitleBuffers = [];
         for (const track of textTracks) {
             // diferentes campos que puede traer Vimeo para el link
