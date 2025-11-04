@@ -142,19 +142,19 @@ export default function CrudSubtitlesComponent(props) {
   return (
     <div className="max-w-5xl mx-auto p-4 md:p-8">
       {/* Info message about video processing time */}
-      <div className="mb-6 p-4 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-900 text-sm">
+      <div className="mb-6 p-4 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-900 text-sm dark:bg-yellow-900 dark:border-yellow-800 dark:text-yellow-100">
         If you just uploaded your movie, please wait at least 30 minutes before it becomes available.
         You may see a message indicating it has not loaded yet. If after this time it is still unavailable, please contact us.
       </div>
       {/* Notice if there is already a Vimeo video */}
       {props.finaldata?.movie?.response_vimeo && (
-        <div className="mb-4 p-3 rounded-lg bg-green-100 text-green-800 text-sm font-semibold shadow">
+        <div className="mb-4 p-3 rounded-lg bg-green-100 text-green-800 text-sm font-semibold shadow dark:bg-green-900 dark:text-green-100">
           There is already a Vimeo video for this movie.
         </div>
       )}
       {/* Render embed only if there is a video */}
       {props.finalData?.movie?.response_vimeo?.player_embed_url && (
-        <div className="mb-6 w-full rounded-lg overflow-hidden shadow">
+        <div className="mb-6 w-full rounded-lg overflow-hidden shadow dark:bg-gray-900">
           <div
             className="w-full aspect-video"
             style={{ maxWidth: "100%" }}
@@ -174,31 +174,31 @@ export default function CrudSubtitlesComponent(props) {
       {/* Only show the rest if there is a video */}
       {props.finalData?.movie?.response_vimeo ? (
         <>
-          <h1 className="text-2xl font-semibold mb-4">Manage Subtitles</h1>
+          <h1 className="text-2xl font-semibold mb-4 dark:text-white">Manage Subtitles</h1>
           <div className="flex flex-col md:flex-row gap-8">
             {/* Formulario de subida */}
             <div className="md:w-1/2 w-full">
               <div className="flex flex-col gap-4 mb-6">
                 <input
-                  className="border rounded-lg p-2 flex-1 !hidden"
+                  className="border rounded-lg p-2 flex-1 !hidden dark:bg-gray-900 dark:text-white dark:border-gray-700"
                   placeholder="Vimeo Video ID (e.g. 123456789)"
                   value={videoId}
                   onChange={e => setVideoId(e.target.value)}
                 />
                 <button
                   onClick={load}
-                  className="px-4 py-2 rounded-lg bg-black text-white font-medium shadow"
+                  className="px-4 py-2 rounded-lg bg-black text-white font-medium shadow dark:bg-gray-800 dark:text-white"
                   disabled={!videoId || loading}
                 >
                   {loading ? "Loading..." : "Load tracks"}
                 </button>
               </div>
-              <form onSubmit={upload} className="border rounded-2xl p-6 space-y-5 bg-gray-50 shadow">
+              <form onSubmit={upload} className="border rounded-2xl p-6 space-y-5 bg-gray-50 shadow dark:bg-gray-900 dark:border-gray-700">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="font-medium block mb-1">Language (BCP-47)</label>
+                    <label className="font-medium block mb-1 dark:text-white">Language (BCP-47)</label>
                     <select
-                      className="border rounded-lg p-2 w-full"
+                      className="border rounded-lg p-2 w-full dark:bg-gray-900 dark:text-white dark:border-gray-700"
                       value={lang}
                       onChange={e => setLang(e.target.value)}
                       disabled={languagesLoading}
@@ -216,26 +216,35 @@ export default function CrudSubtitlesComponent(props) {
                       ))}
                     </select>
                     {languagesLoading && (
-                      <div className="animate-pulse h-4 bg-gray-200 rounded mt-2 w-2/3" />
+                      <div className="animate-pulse h-4 bg-gray-200 rounded mt-2 w-2/3 dark:bg-gray-800" />
                     )}
                   </div>
                   <div>
-                    <label className="font-medium block mb-1">Type</label>
-                    <select className="border rounded-lg p-2 w-full" value={type} onChange={e => setType(e.target.value)}>
+                    <label className="font-medium block mb-1 dark:text-white">Type</label>
+                    <select className="border rounded-lg p-2 w-full dark:bg-gray-900 dark:text-white dark:border-gray-700" value={type} onChange={e => setType(e.target.value)}>
                       <option value="subtitles">subtitles</option>
                     </select>
                   </div>
                 </div>
                 <div>
-                  <label className="font-medium block mb-1">Visible name</label>
-                  <input className="border rounded-lg p-2 w-full" value={name} onChange={e => setName(e.target.value)} placeholder="Spanish" />
+                  <label className="font-medium block mb-1 dark:text-white">Visible name</label>
+                  <input className="border rounded-lg p-2 w-full dark:bg-gray-900 dark:text-white dark:border-gray-700" value={name} onChange={e => setName(e.target.value)} placeholder="Spanish" />
                 </div>
+
+                <div className=" text-xs">
+                  We found a solution for those who are having trouble uploading subtitles to their film 🎬 in adminmovie.gironafilmfestival.com
+                  <br />
+                  The required format is .vtt. You can use the following link to convert your file easily:
+                  <br />
+                  <a href="https://ebby.co/subtitle-tools/converter/srt-to-vtt" target="_blank" className=" font-bold" rel="noopener noreferrer">👉 https://ebby.co/subtitle-tools/converter/srt-to-vtt</a>
+                </div>
+
                 <div>
-                  <label className="font-medium block mb-1">File (.vtt / .srt)</label>
-                  <input type="file" accept=".vtt,.srt" onChange={e => setFile(e.target.files?.[0] || null)} />
+                  <label className="font-medium block mb-1 dark:text-white">File (.vtt)</label>
+                  <input type="file" accept=".vtt" onChange={e => setFile(e.target.files?.[0] || null)} className="dark:text-white" />
                 </div>
                 <button
-                  className="px-4 py-2 rounded-lg bg-black text-white font-semibold shadow w-full"
+                  className="px-4 py-2 rounded-lg bg-black text-white font-semibold shadow w-full dark:bg-gray-800 dark:text-white"
                   disabled={!videoId || loading}
                   type="submit"
                 >
@@ -249,27 +258,27 @@ export default function CrudSubtitlesComponent(props) {
                 {(loading || languagesLoading) && (
                   <>
                     {[1, 2].map(i => (
-                      <div key={i} className="border rounded-2xl p-4 bg-white shadow flex flex-col gap-3 animate-pulse">
-                        <div className="h-4 bg-gray-200 rounded w-1/2 mb-2" />
-                        <div className="h-3 bg-gray-100 rounded w-1/3 mb-2" />
-                        <div className="h-8 bg-gray-100 rounded w-full mb-2" />
+                      <div key={i} className="border rounded-2xl p-4 bg-white shadow flex flex-col gap-3 animate-pulse dark:bg-gray-900 dark:border-gray-700">
+                        <div className="h-4 bg-gray-200 rounded w-1/2 mb-2 dark:bg-gray-800" />
+                        <div className="h-3 bg-gray-100 rounded w-1/3 mb-2 dark:bg-gray-800" />
+                        <div className="h-8 bg-gray-100 rounded w-full mb-2 dark:bg-gray-800" />
                       </div>
                     ))}
                   </>
                 )}
                 {!loading && !languagesLoading && tracks.length === 0 && videoId && (
-                  <div className="opacity-70 text-center">No tracks for this video.</div>
+                  <div className="opacity-70 text-center dark:text-white">No tracks for this video.</div>
                 )}
                 {!loading && !languagesLoading && tracks.map((t) => (
-                  <div key={t.uri} className="border rounded-2xl p-4 bg-white shadow flex flex-col gap-3">
+                  <div key={t.uri} className="border rounded-2xl p-4 bg-white shadow flex flex-col gap-3 dark:bg-gray-900 dark:border-gray-700">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-6 justify-between">
                       <div className="space-y-1 flex-1">
-                        <div className="font-medium text-lg">{t.name || "(no name)"} <span className="opacity-70 text-base">({t.language})</span></div>
-                        <div className="text-sm opacity-70">type: {t.type} · active: {String(t.active)} · default: {String(t.default)}</div>
+                        <div className="font-medium text-lg dark:text-white">{t.name || "(no name)"} <span className="opacity-70 text-base dark:text-gray-300">({t.language})</span></div>
+                        <div className="text-sm opacity-70 dark:text-gray-300">type: {t.type} · active: {String(t.active)} · default: {String(t.default)}</div>
                       </div>
                       <div className="flex gap-2 mt-2 sm:mt-0">
                         <button
-                          className="px-3 py-1 rounded-lg border font-medium hover:bg-gray-100"
+                          className="px-3 py-1 rounded-lg border font-medium hover:bg-gray-100 dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
                           onClick={() => toggleActive(t, !t.active)}
                           disabled={updatingTrackId === t.uri}
                         >
@@ -278,7 +287,7 @@ export default function CrudSubtitlesComponent(props) {
                             : t.active ? "Deactivate" : "Activate"}
                         </button>
                         <button
-                          className="px-3 py-1 rounded-lg border font-medium hover:bg-gray-100 !hidden"
+                          className="px-3 py-1 rounded-lg border font-medium hover:bg-gray-100 !hidden dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
                           onClick={() => setDefault(t)}
                           disabled={updatingTrackId === t.uri}
                         >
@@ -287,7 +296,7 @@ export default function CrudSubtitlesComponent(props) {
                             : "Set as default"}
                         </button>
                         <button
-                          className="px-3 py-1 rounded-lg border font-medium text-red-600 hover:bg-red-50"
+                          className="px-3 py-1 rounded-lg border font-medium text-red-600 hover:bg-red-50 dark:border-gray-700 dark:text-red-400 dark:hover:bg-red-900"
                           onClick={() => remove(t)}
                           disabled={updatingTrackId === t.uri}
                         >
@@ -300,14 +309,14 @@ export default function CrudSubtitlesComponent(props) {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
                       <input
                         defaultValue={t.name || ""}
-                        className="border rounded-lg p-2"
+                        className="border rounded-lg p-2 dark:bg-gray-900 dark:text-white dark:border-gray-700"
                         onBlur={(e) => saveMeta(t, e.target.value, t.language)}
                         placeholder="Visible name"
                         disabled={updatingTrackId === t.uri}
                       />
                       <select
                         defaultValue={t.language || "es"}
-                        className="border rounded-lg p-2"
+                        className="border rounded-lg p-2 dark:bg-gray-900 dark:text-white dark:border-gray-700"
                         onBlur={e => saveMeta(t, t.name, e.target.value)}
                         disabled={languagesLoading || updatingTrackId === t.uri}
                       >
@@ -324,7 +333,7 @@ export default function CrudSubtitlesComponent(props) {
                         ))}
                       </select>
                       {languagesLoading && (
-                        <div className="animate-pulse h-4 bg-gray-200 rounded mt-2 w-2/3" />
+                        <div className="animate-pulse h-4 bg-gray-200 rounded mt-2 w-2/3 dark:bg-gray-800" />
                       )}
                     </div>
                   </div>
@@ -332,7 +341,7 @@ export default function CrudSubtitlesComponent(props) {
               </div>
               {/* Mensaje si no hay tracks activos */}
               {!loading && !languagesLoading && tracks.length > 0 && !tracks.some(t => t.active) && (
-                <div className="mt-4 p-4 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-900 text-sm">
+                <div className="mt-4 p-4 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-900 text-sm dark:bg-yellow-900 dark:border-yellow-800 dark:text-yellow-100">
                   No active subtitles. You must activate at least one to display on the video.
                 </div>
               )}
