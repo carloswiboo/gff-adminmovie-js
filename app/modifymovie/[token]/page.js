@@ -565,7 +565,7 @@ export default function Component({ params }) {
           }}
         >
           <h1 style={{ fontSize: "42px", fontWeight: "bold", marginBottom: "24px" }}>
-            SELECTED
+            {finalData?.movie?.detalle["Judging Status"] || "SELECTED"}
           </h1>
           <div style={{ fontSize: "22px", marginBottom: "18px" }}>
             {finalData?.movie?.detalle["Submission Categories"] || "SUBMISSION CATEGORIES"}
