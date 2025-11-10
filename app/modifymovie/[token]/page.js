@@ -571,7 +571,7 @@ export default function Component({ params }) {
             {finalData?.movie?.detalle["Submission Categories"] || "SUBMISSION CATEGORIES"}
           </div>
           <div style={{ fontSize: "22px", marginBottom: "18px" }}>
-            {finalData?.movie?.detalle["Project Title (Original Language)"] || "PROJECT TITLE (ORIGINAL LANGUAGE)"}
+            {finalData?.movie?.detalle["Project Title"] || "Project Title"}
           </div>
           <div style={{ fontSize: "28px", fontWeight: "bold", marginBottom: "18px" }}>
             {finalData?.movie?.detalle["Project Title (Original Language)"] || "PROJECT TITLE"}
